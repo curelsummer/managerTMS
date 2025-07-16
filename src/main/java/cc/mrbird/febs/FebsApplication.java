@@ -5,11 +5,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableScheduling
 @EnableAsync
+@MapperScan({"cc.mrbird.febs.system.dao"})
 public class FebsApplication {
 
     public static void main(String[] args) {

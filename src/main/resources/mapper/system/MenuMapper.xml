@@ -16,6 +16,7 @@
         <result column="ORDER_NUM" jdbcType="DOUBLE" property="orderNum"/>
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="DELETE_MARK" jdbcType="INTEGER" property="deleteMark"/>
     </resultMap>
 
     <select id="findUserPermissions" resultMap="menu">
@@ -34,6 +35,7 @@
         select m.*
         from t_menu m
         where m.type &lt;&gt; 1
+          and m.DELETE_MARK = 0
           and m.MENU_ID in
               (select distinct rm.menu_id
                from t_role_menu rm

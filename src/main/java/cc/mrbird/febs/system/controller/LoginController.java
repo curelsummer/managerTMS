@@ -70,14 +70,14 @@ public class LoginController {
             throw new FebsException("账号已被锁定,请联系管理员！");
         }
 
-        // 更新用户登录时间
-        this.userService.updateLoginTime(username);
-        // 保存登录记录
-        LoginLog loginLog = new LoginLog();
-        loginLog.setUsername(username);
-        this.loginLogService.saveLoginLog(loginLog);
+//        // 更新用户登录时间
+//        this.userService.updateLoginTime(username);
+//        // 保存登录记录
+//        LoginLog loginLog = new LoginLog();
+//        loginLog.setUsername(username);
+//        this.loginLogService.saveLoginLog(loginLog);
 
-        String token = FebsUtil.encryptToken(JWTUtil.sign(username, password));
+        String token = FebsUtil.encryptToken(JWTUtil.sign(username, password, user.getUserId()));
         LocalDateTime expireTime = LocalDateTime.now().plusSeconds(properties.getShiro().getJwtTimeOut());
         String expireTimeStr = DateUtil.formatFullTime(expireTime);
         JWTToken jwtToken = new JWTToken(token, expireTimeStr);

@@ -64,4 +64,9 @@ public class Menu implements Serializable {
     private transient String createTimeFrom;
     private transient String createTimeTo;
 
+    /**
+     * 逻辑删除标记，0-未删除，1-已删除
+     */
+    private Integer deleteMark;
+
 }

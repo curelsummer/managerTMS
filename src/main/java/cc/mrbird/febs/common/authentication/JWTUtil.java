@@ -59,19 +59,36 @@ public class JWTUtil {
      *
      * @param username 用户名
      * @param secret   用户的密码
+     * @param userId   用户ID
      * @return token
      */
-    public static String sign(String username, String secret) {
+    public static String sign(String username, String secret, Long userId) {
         try {
             username = StringUtils.lowerCase(username);
             Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withClaim("username", username)
+                    .withClaim("userId", userId)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (Exception e) {
             log.error("error：{}", e);
+            return null;
+        }
+    }
+
+    /**
+     * 从 token中获取userId
+     *
+     * @return token中包含的userId
+     */
+    public static Long getUserId(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("userId").asLong();
+        } catch (JWTDecodeException e) {
+            log.error("error：{}", e.getMessage());
             return null;
         }
     }

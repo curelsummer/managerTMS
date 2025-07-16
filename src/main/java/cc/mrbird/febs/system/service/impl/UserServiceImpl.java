@@ -177,16 +177,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setDescription("注册用户");
         this.save(user);
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setCode("UR-" + System.currentTimeMillis());
-        userInfo.setName(name);
-        userInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        userInfo.setUserId(Math.toIntExact(user.getUserId()));
-        userInfoService.save(userInfo);
+        // UserInfo userInfo = new UserInfo();
+        // userInfo.setCode("UR-" + System.currentTimeMillis());
+        // userInfo.setName(name);
+        // userInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        // userInfo.setUserId(Math.toIntExact(user.getUserId()));
+        // userInfoService.save(userInfo);
 
         UserRole ur = new UserRole();
         ur.setUserId(user.getUserId());
-        ur.setRoleId(75L); // 注册用户角色 ID
+        ur.setRoleId(3L); // 注册用户角色 ID
         this.userRoleMapper.insert(ur);
 
         // 创建用户默认的个性化配置
