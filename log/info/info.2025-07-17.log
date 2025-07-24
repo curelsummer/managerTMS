@@ -1,0 +1,698 @@
+2025-07-17 14:35:51.699 febs [main] INFO  cc.mrbird.febs.FebsApplication - Starting FebsApplication on DESKTOP-J4S0HA1 with PID 30312 (F:\TMSmanager\backend\target\classes started by 江西杰联医疗设备有限公司 in F:\TMSmanager\backend)
+2025-07-17 14:35:51.700 febs [main] INFO  cc.mrbird.febs.FebsApplication - No active profile set, falling back to default profiles: default
+2025-07-17 14:35:56.451 febs [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-07-17 14:35:56.452 febs [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2025-07-17 14:35:56.482 febs [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 20ms. Found 0 repository interfaces.
+2025-07-17 14:35:56.689 febs [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2025-07-17 14:35:56.698 febs [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2025-07-17 14:35:56.731 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'asyncExecutorPoolConfig' of type [cc.mrbird.febs.common.config.AsyncExecutorPoolConfig$$EnhancerBySpringCGLIB$$f69b6d60] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.827 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.datasource.dynamic-com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties' of type [com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.915 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration' of type [com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration$$EnhancerBySpringCGLIB$$d0eab904] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.929 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'dsProcessor' of type [com.baomidou.dynamic.datasource.processor.DsHeaderProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.932 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'dynamicDatasourceAnnotationAdvisor' of type [com.baomidou.dynamic.datasource.aop.DynamicDataSourceAnnotationAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.938 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$675c4833] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:56.949 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'shiroConfig' of type [cc.mrbird.febs.common.authentication.ShiroConfig$$EnhancerBySpringCGLIB$$d2dc49dc] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.039 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'redisConfig' of type [cc.mrbird.febs.common.config.RedisConfig$$EnhancerBySpringCGLIB$$cba10130] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.083 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'redisPoolFactory' of type [redis.clients.jedis.JedisPool] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.085 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'redisService' of type [cc.mrbird.febs.common.service.impl.RedisServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.142 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'mybatis-plus-com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties' of type [com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.147 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'mybatisPlusConfig' of type [cc.mrbird.febs.common.config.MybatisPlusConfig$$EnhancerBySpringCGLIB$$b8e3a442] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.149 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'paginationInterceptor' of type [com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.153 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration' of type [com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration$$EnhancerBySpringCGLIB$$a524b4cd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.159 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'dynamicDataSourceCreator' of type [com.baomidou.dynamic.datasource.DynamicDataSourceCreator] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.160 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'dynamicDataSourceProvider' of type [com.baomidou.dynamic.datasource.provider.YmlDynamicDataSourceProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.162 febs [main] INFO  c.b.d.d.DynamicRoutingDataSource - 动态数据源-检测到并开启了p6spy
+2025-07-17 14:35:57.167 febs [main] INFO  com.zaxxer.hikari.HikariDataSource - primary - Starting...
+2025-07-17 14:35:57.425 febs [main] INFO  com.zaxxer.hikari.HikariDataSource - primary - Start completed.
+2025-07-17 14:35:57.425 febs [main] INFO  c.b.d.d.DynamicRoutingDataSource - 初始共加载 1 个数据源
+2025-07-17 14:35:57.426 febs [main] INFO  c.b.d.d.DynamicRoutingDataSource - 动态数据源-加载 primary 成功
+2025-07-17 14:35:57.426 febs [main] INFO  c.b.d.d.DynamicRoutingDataSource - 当前的默认数据源是单数据源，数据源名为 primary
+2025-07-17 14:35:57.426 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'dataSource' of type [com.baomidou.dynamic.datasource.DynamicRoutingDataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.434 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.datasource-org.springframework.boot.autoconfigure.jdbc.DataSourceProperties' of type [org.springframework.boot.autoconfigure.jdbc.DataSourceProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:57.439 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jdbc.DataSourceInitializerInvoker' of type [org.springframework.boot.autoconfigure.jdbc.DataSourceInitializerInvoker] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.376 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'sqlSessionFactory' of type [org.apache.ibatis.session.defaults.DefaultSqlSessionFactory] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.380 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'sqlSessionTemplate' of type [org.mybatis.spring.SqlSessionTemplate] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.382 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.383 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleMapper' of type [com.sun.proxy.$Proxy115] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.399 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleMenuMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.400 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleMenuMapper' of type [com.sun.proxy.$Proxy117] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.404 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userRoleMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.405 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userRoleMapper' of type [com.sun.proxy.$Proxy118] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.406 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userRoleService' of type [cc.mrbird.febs.system.service.impl.UserRoleServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.433 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleMenuService' of type [cc.mrbird.febs.system.service.impl.RoleMenuServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.446 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'roleService' of type [cc.mrbird.febs.system.service.impl.RoleServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.467 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'menuMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.468 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'menuMapper' of type [com.sun.proxy.$Proxy122] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.470 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'menuService' of type [cc.mrbird.febs.system.service.impl.MenuServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.483 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.484 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userMapper' of type [com.sun.proxy.$Proxy124] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.499 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userConfigMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.499 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userConfigMapper' of type [com.sun.proxy.$Proxy125] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.501 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userConfigService' of type [cc.mrbird.febs.system.service.impl.UserConfigServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.516 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userInfoMapper' of type [org.mybatis.spring.mapper.MapperFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.517 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userInfoMapper' of type [com.sun.proxy.$Proxy127] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.518 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userInfoServiceImpl' of type [cc.mrbird.febs.cos.service.impl.UserInfoServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.526 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userService' of type [cc.mrbird.febs.system.service.impl.UserServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.539 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$JacksonObjectMapperConfiguration' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$JacksonObjectMapperConfiguration$$EnhancerBySpringCGLIB$$c2efc7c4] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.542 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$JacksonObjectMapperBuilderConfiguration' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$JacksonObjectMapperBuilderConfiguration$$EnhancerBySpringCGLIB$$753c89dd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.543 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$Jackson2ObjectMapperBuilderCustomizerConfiguration' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$Jackson2ObjectMapperBuilderCustomizerConfiguration$$EnhancerBySpringCGLIB$$30536fcc] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.547 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties' of type [org.springframework.boot.autoconfigure.jackson.JacksonProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.548 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'standardJacksonObjectMapperBuilderCustomizer' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$Jackson2ObjectMapperBuilderCustomizerConfiguration$StandardJackson2ObjectMapperBuilderCustomizer] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.551 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$ParameterNamesModuleConfiguration' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$ParameterNamesModuleConfiguration$$EnhancerBySpringCGLIB$$571ee6fa] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.554 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'parameterNamesModule' of type [com.fasterxml.jackson.module.paramnames.ParameterNamesModule] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.556 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration' of type [org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration$$EnhancerBySpringCGLIB$$a4fb6553] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.563 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'jsonComponentModule' of type [org.springframework.boot.jackson.JsonComponentModule] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.563 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.data.web.config.SpringDataJacksonConfiguration' of type [org.springframework.data.web.config.SpringDataJacksonConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.566 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'jacksonGeoModule' of type [org.springframework.data.geo.GeoModule] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.568 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'jacksonObjectMapperBuilder' of type [org.springframework.http.converter.json.Jackson2ObjectMapperBuilder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.581 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'jacksonObjectMapper' of type [com.fasterxml.jackson.databind.ObjectMapper] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.588 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'cacheService' of type [cc.mrbird.febs.common.service.impl.CacheServiceImpl] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.592 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'userManager' of type [cc.mrbird.febs.system.manager.UserManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.592 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'shiroRealm' of type [cc.mrbird.febs.common.authentication.ShiroRealm] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.597 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'securityManager' of type [org.apache.shiro.web.mgt.DefaultWebSecurityManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.607 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'authorizationAttributeSourceAdvisor' of type [org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.614 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.integration.config.IntegrationManagementConfiguration' of type [org.springframework.integration.config.IntegrationManagementConfiguration$$EnhancerBySpringCGLIB$$d24e0362] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.623 febs [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'integrationDisposableAutoCreatedBeans' of type [org.springframework.integration.config.annotation.Disposables] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-07-17 14:35:59.887 febs [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 9527 (http)
+2025-07-17 14:35:59.895 febs [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9527"]
+2025-07-17 14:35:59.898 febs [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-17 14:35:59.898 febs [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.12
+2025-07-17 14:35:59.902 febs [main] INFO  o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Users\江西杰联医疗设备有限公司\.jdks\corretto-1.8.0_452\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Java\jdk-17\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;F:\Git\cmd;D:\java\bin;D:\java\lib;C:\Program Files\MATLAB\R2024a\runtime\win64;C:\Program Files\MATLAB\R2024a\bin;F:\vivo\pcsuite\;D:\Git LFS;F:\Maven\apache-maven-3.8.9\bin;F:\nodejs\;;C:\Program Files\Java\jdk-17\bin;.]
+2025-07-17 14:35:59.984 febs [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-17 14:35:59.984 febs [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 8240 ms
+2025-07-17 14:36:00.337 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'characterEncodingFilter' to: [/*]
+2025-07-17 14:36:00.337 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'webMvcMetricsFilter' to: [/*]
+2025-07-17 14:36:00.337 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2025-07-17 14:36:00.337 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'formContentFilter' to: [/*]
+2025-07-17 14:36:00.338 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'requestContextFilter' to: [/*]
+2025-07-17 14:36:00.338 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'httpTraceFilter' to: [/*]
+2025-07-17 14:36:00.338 febs [main] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'shiroFilterFactoryBean' to: [/*]
+2025-07-17 14:36:00.338 febs [main] INFO  o.s.b.w.s.ServletRegistrationBean - Servlet dispatcherServlet mapped to [/]
+2025-07-17 14:36:01.098 febs [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'taskExecutor'
+2025-07-17 14:36:02.040 febs [main] INFO  org.quartz.impl.StdSchedulerFactory - Using default implementation for ThreadExecutor
+2025-07-17 14:36:02.048 febs [main] INFO  o.quartz.core.SchedulerSignalerImpl - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+2025-07-17 14:36:02.049 febs [main] INFO  org.quartz.core.QuartzScheduler - Quartz Scheduler v.2.3.0 created.
+2025-07-17 14:36:02.049 febs [main] INFO  org.quartz.simpl.RAMJobStore - RAMJobStore initialized.
+2025-07-17 14:36:02.049 febs [main] INFO  org.quartz.core.QuartzScheduler - Scheduler meta-data: Quartz Scheduler (v2.3.0) 'quartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2025-07-17 14:36:02.049 febs [main] INFO  org.quartz.impl.StdSchedulerFactory - Quartz scheduler 'quartzScheduler' initialized from an externally provided properties instance.
+2025-07-17 14:36:02.049 febs [main] INFO  org.quartz.impl.StdSchedulerFactory - Quartz scheduler version: 2.3.0
+2025-07-17 14:36:02.050 febs [main] INFO  org.quartz.core.QuartzScheduler - JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@1618c98a
+2025-07-17 14:36:02.066 febs [main] INFO  o.s.s.c.ThreadPoolTaskScheduler - Initializing ExecutorService 'taskScheduler'
+2025-07-17 14:36:02.102 febs [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 2 endpoint(s) beneath base path '/actuator'
+2025-07-17 14:36:02.258 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2025-07-17 14:36:02.258 febs [main] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'application.errorChannel' has 1 subscriber(s).
+2025-07-17 14:36:02.258 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started _org.springframework.integration.errorLogger
+2025-07-17 14:36:02.258 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {message-handler:deviceMqttConfig.InboundMessageHandler.serviceActivator} as a subscriber to the 'toiletMqttInboundChannel' channel
+2025-07-17 14:36:02.259 febs [main] INFO  o.s.i.channel.DirectChannel - Channel 'application.toiletMqttInboundChannel' has 1 subscriber(s).
+2025-07-17 14:36:02.259 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started deviceMqttConfig.InboundMessageHandler.serviceActivator
+2025-07-17 14:36:02.259 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {message-handler:deviceMqttConfig.mqttOutbound.serviceActivator} as a subscriber to the 'toiletMqttOutboundChannel' channel
+2025-07-17 14:36:02.259 febs [main] INFO  o.s.i.channel.DirectChannel - Channel 'application.toiletMqttOutboundChannel' has 1 subscriber(s).
+2025-07-17 14:36:02.259 febs [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started deviceMqttConfig.mqttOutbound.serviceActivator
+2025-07-17 14:36:03.441 febs [main] INFO  o.s.i.m.i.MqttPahoMessageDrivenChannelAdapter - started toiletMqttInbound
+2025-07-17 14:36:03.441 febs [main] INFO  o.s.s.quartz.SchedulerFactoryBean - Starting Quartz Scheduler now
+2025-07-17 14:36:03.441 febs [main] INFO  org.quartz.core.QuartzScheduler - Scheduler quartzScheduler_$_NON_CLUSTERED started.
+2025-07-17 14:36:03.470 febs [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9527"]
+2025-07-17 14:36:03.477 febs [main] INFO  o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2025-07-17 14:36:03.488 febs [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 9527 (http) with context path ''
+2025-07-17 14:36:03.490 febs [main] INFO  cc.mrbird.febs.FebsApplication - Started FebsApplication in 12.168 seconds (JVM running for 12.933)
+2025-07-17 14:36:03.496 febs [main] INFO  c.m.f.common.runner.CacheInitRunner - Redis连接中 ······
+2025-07-17 14:36:03.525 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:36:03 | 耗时 3 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 14:36:03.537 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:36:03 | 耗时 2 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 14:36:03.547 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:36:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 14:36:03.552 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:36:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 14:36:04.431 febs [scheduling-1] INFO  cc.mrbird.febs.common.task.CacheTask - delete expired user
+2025-07-17 14:36:04.431 febs [main] INFO  c.m.f.common.runner.CacheInitRunner - 缓存初始化 ······
+2025-07-17 14:36:04.431 febs [main] INFO  c.m.f.common.runner.CacheInitRunner - 缓存用户数据 ······
+2025-07-17 14:36:04.439 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 3 ms | SQL 语句：
+SELECT USER_ID,username,password,dept_id,email,mobile,status,create_time,modify_time,last_login_time,ssex,description,avatar FROM t_user;
+2025-07-17 14:36:04.452 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 9 ms | SQL 语句：
+SELECT u.user_id userId, u.username, u.password, u.email, u.mobile, u. STATUS, u.create_time createTime, u.ssex, d.dept_id deptId, d.dept_name deptName, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME lastLoginTime, GROUP_CONCAT(r.role_id) roleId, GROUP_CONCAT(r.ROLE_NAME) roleName FROM t_user u LEFT JOIN t_dept d ON (u.dept_id = d.dept_id) LEFT JOIN t_user_role ur ON (u.user_id = ur.user_id) LEFT JOIN t_role r ON r.role_id = ur.role_id WHERE u.username = 'admin' group by u.username, u.user_id, u.password, u.email, u.mobile, u.STATUS, u.create_time, u.ssex, d.dept_id, d.dept_name, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME;
+2025-07-17 14:36:04.520 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+select r.* from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) where u.username = 'admin';
+2025-07-17 14:36:04.528 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 2 ms | SQL 语句：
+select distinct m.perms from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) left join t_role_menu rm on (rm.role_id = r.role_id) left join t_menu m on (m.menu_id = rm.menu_id) where u.username = 'admin' and m.perms is not null and m.perms <> '';
+2025-07-17 14:36:04.533 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 1 ms | SQL 语句：
+SELECT USER_ID,theme,layout,multi_page,fix_siderbar,fix_header,color FROM t_user_config WHERE USER_ID='1' ;
+2025-07-17 14:36:04.537 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+SELECT u.user_id userId, u.username, u.password, u.email, u.mobile, u. STATUS, u.create_time createTime, u.ssex, d.dept_id deptId, d.dept_name deptName, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME lastLoginTime, GROUP_CONCAT(r.role_id) roleId, GROUP_CONCAT(r.ROLE_NAME) roleName FROM t_user u LEFT JOIN t_dept d ON (u.dept_id = d.dept_id) LEFT JOIN t_user_role ur ON (u.user_id = ur.user_id) LEFT JOIN t_role r ON r.role_id = ur.role_id WHERE u.username = 'doctor' group by u.username, u.user_id, u.password, u.email, u.mobile, u.STATUS, u.create_time, u.ssex, d.dept_id, d.dept_name, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME;
+2025-07-17 14:36:04.539 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+select r.* from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) where u.username = 'doctor';
+2025-07-17 14:36:04.541 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+select distinct m.perms from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) left join t_role_menu rm on (rm.role_id = r.role_id) left join t_menu m on (m.menu_id = rm.menu_id) where u.username = 'doctor' and m.perms is not null and m.perms <> '';
+2025-07-17 14:36:04.542 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+SELECT USER_ID,theme,layout,multi_page,fix_siderbar,fix_header,color FROM t_user_config WHERE USER_ID='2' ;
+2025-07-17 14:36:04.543 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+SELECT u.user_id userId, u.username, u.password, u.email, u.mobile, u. STATUS, u.create_time createTime, u.ssex, d.dept_id deptId, d.dept_name deptName, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME lastLoginTime, GROUP_CONCAT(r.role_id) roleId, GROUP_CONCAT(r.ROLE_NAME) roleName FROM t_user u LEFT JOIN t_dept d ON (u.dept_id = d.dept_id) LEFT JOIN t_user_role ur ON (u.user_id = ur.user_id) LEFT JOIN t_role r ON r.role_id = ur.role_id WHERE u.username = 'nurse' group by u.username, u.user_id, u.password, u.email, u.mobile, u.STATUS, u.create_time, u.ssex, d.dept_id, d.dept_name, u.AVATAR, u.DESCRIPTION, u.LAST_LOGIN_TIME;
+2025-07-17 14:36:04.544 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+select r.* from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) where u.username = 'nurse';
+2025-07-17 14:36:04.546 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+select distinct m.perms from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) left join t_role_menu rm on (rm.role_id = r.role_id) left join t_menu m on (m.menu_id = rm.menu_id) where u.username = 'nurse' and m.perms is not null and m.perms <> '';
+2025-07-17 14:36:04.547 febs [main] INFO  p6spy - 2025-07-17 14:36:04 | 耗时 0 ms | SQL 语句：
+SELECT USER_ID,theme,layout,multi_page,fix_siderbar,fix_header,color FROM t_user_config WHERE USER_ID='3' ;
+2025-07-17 14:36:04.547 febs [main] INFO  c.m.f.common.runner.StartedUpRunner -  __    ___   _      ___   _     ____ _____  ____ 
+2025-07-17 14:36:04.547 febs [main] INFO  c.m.f.common.runner.StartedUpRunner - / /`  / / \ | |\/| | |_) | |   | |_   | |  | |_  
+2025-07-17 14:36:04.547 febs [main] INFO  c.m.f.common.runner.StartedUpRunner - \_\_, \_\_/ |_|  | |_|   |_|__ |_|__  |_|  |_|__ 
+2025-07-17 14:36:04.547 febs [main] INFO  c.m.f.common.runner.StartedUpRunner -                                                       
+2025-07-17 14:36:04.548 febs [main] INFO  c.m.f.common.runner.StartedUpRunner - 启动完毕，时间：2025-07-17T14:36:04.547
+2025-07-17 14:36:04.958 febs [RMI TCP Connection(2)-192.168.10.15] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-17 14:36:04.958 febs [RMI TCP Connection(2)-192.168.10.15] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-07-17 14:36:04.967 febs [RMI TCP Connection(2)-192.168.10.15] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2025-07-17 14:36:05.023 febs [RMI TCP Connection(3)-192.168.10.15] INFO  p6spy - 2025-07-17 14:36:05 | 耗时 0 ms | SQL 语句：
+/* ping */ SELECT 1;
+2025-07-17 14:39:08.216 febs [http-nio-9527-exec-5] INFO  c.m.febs.common.aspect.LimitAspect - IP:127.0.0.1 第 1 次访问key为 [limit_login127.0.0.1]，描述为 [登录接口] 的接口
+2025-07-17 14:39:09.318 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 0 ms | SQL 语句：
+select distinct m.perms from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) left join t_role_menu rm on (rm.role_id = r.role_id) left join t_menu m on (m.menu_id = rm.menu_id) where u.username = 'admin' and m.perms is not null and m.perms <> '';
+2025-07-17 14:39:09.366 febs [http-nio-9527-exec-7] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:39:09.382 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 2 ms | SQL 语句：
+select m.* from t_menu m where m.type <> 1 and m.DELETE_MARK = 0 and m.MENU_ID in (select distinct rm.menu_id from t_role_menu rm left join t_role r on (rm.role_id = r.role_id) left join t_user_role ur on (ur.role_id = r.role_id) left join t_user u on (u.user_id = ur.user_id) where u.username = 'admin') order by m.order_num;
+2025-07-17 14:39:09.483 febs [http-nio-9527-exec-9] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:39:09.501 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 14 ms | SQL 语句：
+select count(1) from t_login_log;
+2025-07-17 14:39:09.504 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 1 ms | SQL 语句：
+select count(1) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 14:39:09.505 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 0 ms | SQL 语句：
+select count(distinct(ip)) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 14:39:09.507 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 1 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 group by days;
+2025-07-17 14:39:09.509 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 14:39:09 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 and l.username = 'admin' group by days;
+2025-07-17 14:39:50.037 febs [http-nio-9527-exec-1] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:39:50.040 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 14:39:50 | 耗时 1 ms | SQL 语句：
+select count(1) from t_login_log;
+2025-07-17 14:39:50.042 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 14:39:50 | 耗时 0 ms | SQL 语句：
+select count(1) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 14:39:50.042 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 14:39:50 | 耗时 0 ms | SQL 语句：
+select count(distinct(ip)) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 14:39:50.044 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 14:39:50 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 group by days;
+2025-07-17 14:39:50.045 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 14:39:50 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 and l.username = 'admin' group by days;
+2025-07-17 14:41:03.484 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:41:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 14:41:03.486 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:41:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 14:41:53.474 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:41:53 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 14:41:53.476 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:41:53 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 14:45:47.013 febs [http-nio-9527-exec-6] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:45:47.045 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:45:47 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 14:45:47.068 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:45:47 | 耗时 2 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 14:45:47.072 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:45:47 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 14:46:03.482 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:46:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 14:46:03.484 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:46:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 14:47:43.477 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:47:43 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 14:47:43.479 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:47:43 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 14:51:03.483 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:51:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 14:51:03.485 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:51:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 14:53:33.484 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:53:33 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 14:53:33.488 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:53:33 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 14:54:38.020 febs [http-nio-9527-exec-7] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:54:38.043 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 14:54:38 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 14:54:38.050 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 14:54:38 | 耗时 4 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 14:54:38.051 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 14:54:38 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 14:55:49.130 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 14:55:49 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 14:55:49.137 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 14:55:49 | 耗时 3 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 14:55:49.138 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 14:55:49 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 14:55:53.916 febs [http-nio-9527-exec-1] INFO  o.a.coyote.http11.Http11Processor - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in the request target. The valid characters are defined in RFC 7230 and RFC 3986
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:467)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:294)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:770)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1415)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:750)
+2025-07-17 14:56:03.483 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:56:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 14:56:03.485 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:56:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 14:57:37.408 febs [http-nio-9527-exec-6] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 14:57:37.413 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:57:37 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 14:57:37.417 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:57:37 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 14:57:37.418 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 14:57:37 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 14:58:05.865 febs [http-nio-9527-exec-4] INFO  p6spy - 2025-07-17 14:58:05 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 14:58:05.868 febs [http-nio-9527-exec-4] INFO  p6spy - 2025-07-17 14:58:05 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 14:58:05.870 febs [http-nio-9527-exec-4] INFO  p6spy - 2025-07-17 14:58:05 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 14:59:23.485 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:59:23 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 14:59:23.488 febs [scheduling-1] INFO  p6spy - 2025-07-17 14:59:23 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:00:55.638 febs [http-nio-9527-exec-9] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:00:55.642 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:00:55 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:00:55.645 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:00:55 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:00:55.646 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:00:55 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:01:03.484 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:01:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:01:03.486 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:01:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:01:38.428 febs [http-nio-9527-exec-2] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:01:38.432 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:01:38 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:01:38.435 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:01:38 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:01:38.436 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:01:38 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:04:01.567 febs [http-nio-9527-exec-5] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:04:01.571 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 15:04:01 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:04:01.575 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 15:04:01 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:04:01.576 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 15:04:01 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:04:03.314 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:04:03 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:04:03.319 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:04:03 | 耗时 2 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:04:03.321 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:04:03 | 耗时 1 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:05:13.473 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:05:13 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:05:13.475 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:05:13 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:05:37.545 febs [http-nio-9527-exec-10] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:05:37.553 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:05:37 | 耗时 1 ms | SQL 语句：
+select count(1) from t_login_log;
+2025-07-17 15:05:37.556 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:05:37 | 耗时 0 ms | SQL 语句：
+select count(1) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 15:05:37.558 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:05:37 | 耗时 0 ms | SQL 语句：
+select count(distinct(ip)) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 15:05:37.561 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:05:37 | 耗时 1 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 group by days;
+2025-07-17 15:05:37.563 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:05:37 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 and l.username = 'admin' group by days;
+2025-07-17 15:05:41.415 febs [http-nio-9527-exec-2] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:05:41.420 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:05:41 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:05:41.423 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:05:41 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:05:41.424 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:05:41 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:05:43.058 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:05:43 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:05:43.060 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:05:43 | 耗时 0 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:05:43.062 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:05:43 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:06:03.477 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:06:03 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:06:03.480 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:06:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:11:03.488 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:11:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:11:03.491 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:11:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:11:03.492 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:11:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:11:03.494 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:11:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:11:16.719 febs [http-nio-9527-exec-7] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:11:16.725 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:11:16 | 耗时 1 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:11:16.731 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:11:16 | 耗时 5 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:11:16.733 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:11:16 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:16:03.483 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:16:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:16:03.485 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:16:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:16:05.431 febs [http-nio-9527-exec-1] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:16:05.435 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 15:16:05 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:16:05.437 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 15:16:05 | 耗时 0 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:16:05.438 febs [http-nio-9527-exec-1] INFO  p6spy - 2025-07-17 15:16:05 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:16:53.483 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:16:53 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:16:53.486 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:16:53 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:18:48.525 febs [http-nio-9527-exec-6] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:18:48.532 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:18:48 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:18:48.534 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:18:48 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:18:48.535 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:18:48 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:21:03.475 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:21:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:21:03.477 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:21:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:22:43.490 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:22:43 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:22:43.492 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:22:43 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:24:21.786 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:24:21 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:24:21.791 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:24:21 | 耗时 2 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:24:21.794 febs [http-nio-9527-exec-7] INFO  p6spy - 2025-07-17 15:24:21 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:24:48.816 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:24:48 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:24:48.822 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:24:48 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:24:48.823 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 15:24:48 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:26:03.486 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:26:03 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:26:03.489 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:26:03 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:28:31.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:28:31 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:28:31.752 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:28:31 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:31:01.744 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:31:01.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:34:21.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:34:21 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:34:21.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:34:21 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:36:01.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:36:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:36:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:36:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:36:01.768 febs [scheduling-1] INFO  cc.mrbird.febs.common.task.CacheTask - delete expired user
+2025-07-17 15:40:11.738 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:40:11 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:40:11.741 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:40:11 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:41:01.749 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:41:01.751 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:45:22.890 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:22 | 耗时 3 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:45:22.895 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:22 | 耗时 3 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:45:22.898 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:22 | 耗时 1 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:45:29.085 febs [http-nio-9527-exec-6] INFO  c.m.febs.common.aspect.LimitAspect - IP:127.0.0.1 第 1 次访问key为 [limit_login127.0.0.1]，描述为 [登录接口] 的接口
+2025-07-17 15:45:29.168 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 8 ms | SQL 语句：
+select distinct m.perms from t_role r left join t_user_role ur on (r.role_id = ur.role_id) left join t_user u on (u.user_id = ur.user_id) left join t_role_menu rm on (rm.role_id = r.role_id) left join t_menu m on (m.menu_id = rm.menu_id) where u.username = 'admin' and m.perms is not null and m.perms <> '';
+2025-07-17 15:45:29.184 febs [http-nio-9527-exec-4] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:45:29.189 febs [http-nio-9527-exec-4] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 1 ms | SQL 语句：
+select m.* from t_menu m where m.type <> 1 and m.DELETE_MARK = 0 and m.MENU_ID in (select distinct rm.menu_id from t_role_menu rm left join t_role r on (rm.role_id = r.role_id) left join t_user_role ur on (ur.role_id = r.role_id) left join t_user u on (u.user_id = ur.user_id) where u.username = 'admin') order by m.order_num;
+2025-07-17 15:45:29.275 febs [http-nio-9527-exec-8] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:45:29.284 febs [http-nio-9527-exec-8] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 3 ms | SQL 语句：
+select count(1) from t_login_log;
+2025-07-17 15:45:29.286 febs [http-nio-9527-exec-8] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 1 ms | SQL 语句：
+select count(1) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 15:45:29.289 febs [http-nio-9527-exec-8] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 0 ms | SQL 语句：
+select count(distinct(ip)) from t_login_log where datediff(login_time,now())=0;
+2025-07-17 15:45:29.292 febs [http-nio-9527-exec-8] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 group by days;
+2025-07-17 15:45:29.295 febs [http-nio-9527-exec-8] INFO  p6spy - 2025-07-17 15:45:29 | 耗时 0 ms | SQL 语句：
+select date_format(l.login_time, '%m-%d') days, count(1) count from ( select * from t_login_log where date_sub(curdate(), interval 7 day) <= date(login_time) ) as l where 1 = 1 and l.username = 'admin' group by days;
+2025-07-17 15:45:32.828 febs [http-nio-9527-exec-10] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 15:45:32.833 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:45:32 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:45:32.836 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:45:32 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 15:45:32.838 febs [http-nio-9527-exec-10] INFO  p6spy - 2025-07-17 15:45:32 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 15:45:36.284 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:36 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 15:45:36.288 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:36 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM patient;
+2025-07-17 15:45:36.289 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 15:45:36 | 耗时 0 ms | SQL 语句：
+SELECT id,hospital_id,department_id,name,id_card,gender,birthday,his_id,code,created_by,created_at,updated_by,updated_at FROM patient LIMIT 0,10;
+2025-07-17 15:45:37.342 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:45:37 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM user_info WHERE 1 = 1;
+2025-07-17 15:45:37.343 febs [http-nio-9527-exec-6] INFO  p6spy - 2025-07-17 15:45:37 | 耗时 0 ms | SQL 语句：
+select id, code, name, remark, images, create_date, user_id from user_info where 1 = 1 order by create_date desc LIMIT 0,10;
+2025-07-17 15:46:01.741 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:46:01.743 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:46:01.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:46:01.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:51:01.739 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:51:01.741 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:51:51.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:51:51 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:51:51.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:51:51 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 15:56:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 15:56:01.753 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 15:57:41.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:57:41 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 15:57:41.749 febs [scheduling-1] INFO  p6spy - 2025-07-17 15:57:41 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:01:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:01:01 | 耗时 9 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:01:01.752 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:01:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:03:31.751 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:03:31 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:03:31.753 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:03:31 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:06:01.744 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:06:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:06:01.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:06:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:09:21.757 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:09:21 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:09:21.759 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:09:21 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:11:01.740 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:11:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:11:01.742 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:11:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:15:11.744 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:15:11 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:15:11.745 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:15:11 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:16:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:16:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:16:01.759 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:16:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:21:01.753 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:21:01.755 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:21:01.756 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:21:01.758 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:24:44.985 febs [http-nio-9527-exec-9] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 16:24:44.997 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 16:24:44 | 耗时 2 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 16:24:45.010 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 16:24:45 | 耗时 11 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 16:24:45.012 febs [http-nio-9527-exec-9] INFO  p6spy - 2025-07-17 16:24:45 | 耗时 1 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 16:26:01.745 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:26:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:26:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:26:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:26:04.975 febs [http-nio-9527-exec-2] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 16:26:04.980 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 16:26:04 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 16:26:04.982 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 16:26:04 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 16:26:04.983 febs [http-nio-9527-exec-2] INFO  p6spy - 2025-07-17 16:26:04 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 16:26:51.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:26:51 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:26:51.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:26:51 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:29:28.273 febs [http-nio-9527-exec-5] INFO  c.m.f.common.authentication.JWTUtil - token is valid
+2025-07-17 16:29:28.278 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 16:29:28 | 耗时 0 ms | SQL 语句：
+SELECT user_id,role_id FROM t_user_role WHERE user_id = 1;
+2025-07-17 16:29:28.280 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 16:29:28 | 耗时 1 ms | SQL 语句：
+SELECT COUNT(1) FROM device;
+2025-07-17 16:29:28.281 febs [http-nio-9527-exec-5] INFO  p6spy - 2025-07-17 16:29:28 | 耗时 0 ms | SQL 语句：
+SELECT device_id,hospital_id,device_type,sn,status,last_heartbeat,created_by,created_at,updated_by,updated_at,extend_field1,extend_field2,extend_field3 FROM device LIMIT 0,10;
+2025-07-17 16:31:01.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:31:01.749 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:32:41.755 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:32:41 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:32:41.757 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:32:41 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:36:01.737 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:36:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:36:01.740 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:36:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:36:01.759 febs [scheduling-1] INFO  cc.mrbird.febs.common.task.CacheTask - delete expired user
+2025-07-17 16:38:31.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:38:31 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:38:31.749 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:38:31 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:41:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:41:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:44:21.751 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:44:21 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:44:21.752 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:44:21 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:46:01.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:46:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:50:11.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:50:11 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:50:11.751 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:50:11 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:51:01.756 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:51:01.758 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 16:56:01.735 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 16:56:01.738 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 16:56:01.739 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 16:56:01.741 febs [scheduling-1] INFO  p6spy - 2025-07-17 16:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:01:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:01:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:01:01.753 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:01:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:01:51.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:01:51 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:01:51.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:01:51 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:06:01.754 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:06:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:06:01.756 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:06:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:07:41.745 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:07:41 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:07:41.747 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:07:41 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:11:01.754 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:11:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:11:01.757 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:11:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:13:31.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:13:31 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:13:31.752 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:13:31 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:16:01.739 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:16:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:16:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:16:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:19:21.754 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:19:21 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:19:21.756 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:19:21 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:21:01.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:21:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:21:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:25:11.743 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:25:11 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:25:11.744 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:25:11 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:26:01.756 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:26:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:26:01.758 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:26:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:31:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:31:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:31:01.751 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:31:01.753 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:31:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:36:01.745 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:36:01 | 耗时 1 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:36:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:36:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:36:01.768 febs [scheduling-1] INFO  cc.mrbird.febs.common.task.CacheTask - delete expired user
+2025-07-17 17:36:51.744 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:36:51 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:36:51.745 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:36:51 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:41:01.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:41:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:41:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:42:41.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:42:41 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:42:41.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:42:41 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:46:01.737 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:46:01.739 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:46:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:48:31.746 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:48:31 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:48:31.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:48:31 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:51:01.741 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:51:01.743 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:51:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 17:54:21.748 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:54:21 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 17:54:21.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:54:21 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 17:56:01.750 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 17:56:01.752 febs [scheduling-1] INFO  p6spy - 2025-07-17 17:56:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';
+2025-07-17 18:00:11.739 febs [scheduling-1] INFO  p6spy - 2025-07-17 18:00:11 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info WHERE open_flag = '1';
+2025-07-17 18:00:11.742 febs [scheduling-1] INFO  p6spy - 2025-07-17 18:00:11 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '1';
+2025-07-17 18:01:01.735 febs [scheduling-1] INFO  p6spy - 2025-07-17 18:01:01 | 耗时 0 ms | SQL 语句：
+SELECT id,code,name,type_id,online_flag,create_date,open_flag,device_value,alert_value,value_type,remark,user_id,last_open_date,address FROM device_info;
+2025-07-17 18:01:01.737 febs [scheduling-1] INFO  p6spy - 2025-07-17 18:01:01 | 耗时 0 ms | SQL 语句：
+SELECT id,device_id,device_type_id,type,score,create_date,remark FROM device_alert_info WHERE type = '2';

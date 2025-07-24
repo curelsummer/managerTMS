@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.dao.PrescriptionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.system.domain.Prescription">
+        <id column="id" property="id"/>
+        <result column="patient_id" property="patientId"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="pres_type" property="presType"/>
+        <result column="status" property="status"/>
+        <result column="pres_strength" property="presStrength"/>
+        <result column="pres_freq" property="presFreq"/>
+        <result column="last_time" property="lastTime"/>
+        <result column="pause_time" property="pauseTime"/>
+        <result column="repeat_count" property="repeatCount"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="total_time" property="totalTime"/>
+        <result column="pres_part_id" property="presPartId"/>
+        <result column="pres_part_name" property="presPartName"/>
+        <result column="standard_pres_id" property="standardPresId"/>
+        <result column="standard_pres_name" property="standardPresName"/>
+        <result column="tbs_type" property="tbsType"/>
+        <result column="inner_count" property="innerCount"/>
+        <result column="inter_freq" property="interFreq"/>
+        <result column="inter_count" property="interCount"/>
+        <result column="periods" property="periods"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, patient_id, hospital_id, doctor_id, pres_type, status, pres_strength, pres_freq, 
+        last_time, pause_time, repeat_count, total_count, total_time, pres_part_id, pres_part_name,
+        standard_pres_id, standard_pres_name, tbs_type, inner_count, inter_freq, inter_count, periods,
+        created_by, created_at, updated_by, updated_at
+    </sql>
+
+</mapper> 
