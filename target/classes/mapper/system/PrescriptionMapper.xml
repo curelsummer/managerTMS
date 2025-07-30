@@ -6,8 +6,9 @@
     <resultMap id="BaseResultMap" type="cc.mrbird.febs.system.domain.Prescription">
         <id column="id" property="id"/>
         <result column="patient_id" property="patientId"/>
+        <result column="doctor_id" property="doctorId"/>  
         <result column="hospital_id" property="hospitalId"/>
-        <result column="doctor_id" property="doctorId"/>
+        <result column="device_id" property="deviceId"/>
         <result column="pres_type" property="presType"/>
         <result column="status" property="status"/>
         <result column="pres_strength" property="presStrength"/>
@@ -34,7 +35,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, patient_id, hospital_id, doctor_id, pres_type, status, pres_strength, pres_freq, 
+        id, patient_id, doctor_id,hospital_id,  device_id, pres_type, status, pres_strength, pres_freq, 
         last_time, pause_time, repeat_count, total_count, total_time, pres_part_id, pres_part_name,
         standard_pres_id, standard_pres_name, tbs_type, inner_count, inter_freq, inter_count, periods,
         created_by, created_at, updated_by, updated_at

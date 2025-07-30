@@ -19,6 +19,7 @@ public class Prescription implements Serializable {
     private Long patientId;
     private Long hospitalId;
     private Long doctorId;
+    private Long deviceId; // 执行时使用的设备ID
     
     // 处方类型和状态
     private Integer presType;

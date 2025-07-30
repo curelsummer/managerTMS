@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.system.dao.PrescriptionExecutionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.system.domain.PrescriptionExecution">
+        <id column="id" property="id"/>
+        <result column="patient_id" property="patientId"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="prescription_id" property="prescriptionId"/>
+        <result column="executor_id" property="executorId"/>
+        <result column="status" property="status"/>
+        <result column="progress" property="progress"/>
+        <result column="exception" property="exception"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, patient_id, hospital_id, device_id, prescription_id, executor_id, status, progress, exception,
+        created_by, created_at, updated_by, updated_at
+    </sql>
+
+</mapper> 

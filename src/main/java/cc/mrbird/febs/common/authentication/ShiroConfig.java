@@ -32,6 +32,7 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 放开WebSocket端点认证
         filterChainDefinitionMap.put("/ws/device", "anon");
+        filterChainDefinitionMap.put("/ws/prescriptionexecution", "anon");
         // 所有请求都要经过 jwt过滤器
         filterChainDefinitionMap.put("/**", "jwt");
 
