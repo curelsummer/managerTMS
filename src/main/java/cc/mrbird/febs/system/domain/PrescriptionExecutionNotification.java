@@ -105,6 +105,7 @@ public class PrescriptionExecutionNotification implements Serializable {
     @Data
     public static class DeviceInfo implements Serializable {
         private Long deviceId;
+        private Integer deviceNo;        // 设备编号
         private String deviceType;
         private String sn;
         private String status;

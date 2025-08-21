@@ -21,7 +21,10 @@ public class Device implements Serializable {
     private Date createdAt;
     private Long updatedBy;
     private Date updatedAt;
-    private String extendField1;
-    private String extendField2;
-    private String extendField3;
+    
+    // 新增字段
+    private Integer deviceNo;        // 设备编号
+    private Integer batTimes;        // 拍子使用次数
+    private Integer capTimes;        // 电容使用次数
+    private Integer treatmentStatus; // 治疗状态：1-刺激状态，0-非刺激状态
 } 

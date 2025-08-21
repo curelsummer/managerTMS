@@ -31,8 +31,10 @@ public class PrescriptionExecutionWebSocketServer {
     public void onOpen(Session session) {
         sessions.add(session);
         System.out.println("=== 处方执行WebSocket连接建立 ===");
+        System.out.println("端点: /ws/prescriptionexecution");
         System.out.println("会话ID: " + session.getId());
-        System.out.println("当前总连接数: " + sessions.size());
+        System.out.println("当前处方执行连接数: " + sessions.size());
+        System.out.println("说明：此端点用于处理处方执行相关消息");
     }
 
     @OnClose
@@ -278,6 +280,19 @@ public class PrescriptionExecutionWebSocketServer {
             
             String message = objectMapper.writeValueAsString(data);
             System.out.println("消息内容长度: " + message.length() + " 字符");
+            
+            // 尝试解析消息内容，输出设备编号信息
+            try {
+                JsonNode jsonNode = objectMapper.readTree(message);
+                if (jsonNode.has("deviceInfo") && jsonNode.get("deviceInfo").has("deviceNo")) {
+                    Integer deviceNo = jsonNode.get("deviceInfo").get("deviceNo").asInt();
+                    System.out.println("广播消息包含设备编号: " + deviceNo);
+                } else {
+                    System.out.println("广播消息中未找到设备编号信息");
+                }
+            } catch (Exception e) {
+                System.out.println("解析广播消息内容失败: " + e.getMessage());
+            }
             
             int successCount = 0;
             int failCount = 0;

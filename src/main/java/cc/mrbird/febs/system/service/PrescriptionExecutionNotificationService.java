@@ -139,11 +139,14 @@ public class PrescriptionExecutionNotificationService {
                 System.out.println("设备信息查询成功: " + device.getSn());
                 PrescriptionExecutionNotification.DeviceInfo deviceInfo = new PrescriptionExecutionNotification.DeviceInfo();
                 deviceInfo.setDeviceId(device.getDeviceId());
+                deviceInfo.setDeviceNo(device.getDeviceNo());        // 设置设备编号
                 deviceInfo.setDeviceType(device.getDeviceType());
                 deviceInfo.setSn(device.getSn());
                 deviceInfo.setStatus(device.getStatus());
                 deviceInfo.setLastHeartbeat(device.getLastHeartbeat());
                 notification.setDeviceInfo(deviceInfo);
+                
+                System.out.println("设备编号已设置: " + device.getDeviceNo());
             } else {
                 System.out.println("设备信息查询失败，设备ID: " + execution.getDeviceId());
             }

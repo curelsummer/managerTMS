@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import cc.mrbird.febs.system.service.DeviceService;
+import cc.mrbird.febs.system.domain.Device;
 
 @RestController
 @RequestMapping("/prescription-execution")
@@ -33,6 +35,9 @@ public class PrescriptionExecutionController {
     
     @Autowired
     private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private DeviceService deviceService;
 
     /**
      * 获取所有处方执行记录
@@ -107,6 +112,20 @@ public class PrescriptionExecutionController {
                 System.out.println("设备ID: " + execution.getDeviceId());
                 System.out.println("执行人ID: " + execution.getExecutorId());
                 System.out.println("医院ID: " + execution.getHospitalId());
+                
+                // 查询并输出设备编号
+                if (execution.getDeviceId() != null) {
+                    try {
+                        cc.mrbird.febs.system.domain.Device device = deviceService.getById(execution.getDeviceId());
+                        if (device != null && device.getDeviceNo() != null) {
+                            System.out.println("设备编号: " + device.getDeviceNo());
+                        } else {
+                            System.out.println("设备编号: 未设置");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("查询设备编号失败: " + e.getMessage());
+                    }
+                }
                 
                 // 发送WebSocket通知
                 notificationService.notifyPrescriptionExecutionCreated(execution);

@@ -52,10 +52,22 @@ public class DeviceController {
     @PutMapping
     public boolean update(@RequestBody Device device) {
         boolean updated = deviceService.updateById(device);
-        if (updated && device.getStatus() != null) {
-            // 推送WebSocket状态变更
-            String msg = String.format("{\"deviceId\":%d,\"status\":\"%s\"}", device.getDeviceId(), device.getStatus());
-            DeviceWebSocketServer.broadcast(msg);
+        if (updated) {
+            // 推送WebSocket状态变更，包含新字段
+            try {
+                String msg = String.format(
+                    "{\"deviceId\":%d,\"status\":\"%s\",\"treatmentStatus\":%s}",
+                    device.getDeviceId(),
+                    device.getStatus() != null ? device.getStatus() : "unknown",
+                    device.getTreatmentStatus() != null ? device.getTreatmentStatus() : 0
+                );
+                
+                DeviceWebSocketServer.broadcast(msg);
+                System.out.println("推送设备状态更新消息: " + msg);
+            } catch (Exception e) {
+                System.err.println("推送WebSocket消息失败: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         return updated;
     }
