@@ -269,17 +269,36 @@ public class DeviceWebSocketServer {
         // System.out.println("推送消息: " + message);
         // System.out.println("当前连接数: " + sessions.size());
         
-        for (Session session : sessions) {
-            if (session.isOpen()) {
-                try {
-                    session.getBasicRemote().sendText(message);
-                    // System.out.println("消息推送成功到 Session: " + session.getId());
-                } catch (IOException e) {
-                    System.err.println("推送消息到 Session " + session.getId() + " 失败: " + e.getMessage());
-                    e.printStackTrace();
+        // 使用同步块防止并发写入冲突
+        synchronized (DeviceWebSocketServer.class) {
+            for (Session session : sessions) {
+                if (session.isOpen()) {
+                    try {
+                        // 检查session是否可写
+                        if (session.getBasicRemote().getBatchingAllowed()) {
+                            session.getBasicRemote().sendText(message);
+                            // System.out.println("消息推送成功到 Session: " + session.getId());
+                        } else {
+                            // 如果session不可写，跳过
+                            System.out.println("Session " + session.getId() + " 不可写，跳过推送");
+                        }
+                    } catch (IllegalStateException e) {
+                        // 处理状态冲突异常
+                        System.err.println("推送消息到 Session " + session.getId() + " 失败（状态冲突）: " + e.getMessage());
+                        // 尝试关闭有问题的session
+                        try {
+                            session.close();
+                            System.out.println("已关闭状态冲突的 Session: " + session.getId());
+                        } catch (IOException closeException) {
+                            System.err.println("关闭Session " + session.getId() + " 时发生异常: " + closeException.getMessage());
+                        }
+                    } catch (IOException e) {
+                        System.err.println("推送消息到 Session " + session.getId() + " 失败: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    // System.out.println("Session " + session.getId() + " 已关闭，跳过推送");
                 }
-            } else {
-                // System.out.println("Session " + session.getId() + " 已关闭，跳过推送");
             }
         }
         // System.out.println("=== 消息推送完成 ===");

@@ -33,6 +33,7 @@ public class ShiroConfig {
         // 放开WebSocket端点认证
         filterChainDefinitionMap.put("/ws/device", "anon");
         filterChainDefinitionMap.put("/ws/prescriptionexecution", "anon");
+        filterChainDefinitionMap.put("/ws/treatment-record", "anon");
         // 所有请求都要经过 jwt过滤器
         filterChainDefinitionMap.put("/**", "jwt");
 

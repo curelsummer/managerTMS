@@ -728,6 +728,13 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             System.out.println("状态: " + status);
             // System.out.println("时间: " + new Date());
             
+            // 添加小延迟，避免快速连续推送导致的状态冲突
+            try {
+                Thread.sleep(50); // 50毫秒延迟
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
             // 查询设备信息，获取设备编号和刺激状态
             // System.out.println("开始查询设备信息...");
             Device device = deviceService.getById(deviceId);
