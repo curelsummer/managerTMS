@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
+
+import java.nio.charset.StandardCharsets;
 
 import cc.mrbird.febs.system.service.DeviceService;
 import cc.mrbird.febs.system.domain.Device;
@@ -486,16 +490,22 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         try {
             System.out.println("=== 开始心跳超时检查 ===");
             
-            // 检查Redis连接
+            // 检查Redis连接（确保及时关闭连接归还给连接池）
+            org.springframework.data.redis.connection.RedisConnection conn = null;
             try {
-                redisTemplate.getConnectionFactory().getConnection().ping();
+                conn = redisTemplate.getConnectionFactory().getConnection();
+                conn.ping();
                 System.out.println("Redis连接正常");
             } catch (Exception e) {
                 System.err.println("Redis连接失败，跳过心跳检查: " + e.getMessage());
                 return;
+            } finally {
+                if (conn != null) {
+                    try { conn.close(); } catch (Exception ignore) {}
+                }
             }
             
-            Set<String> keys = redisTemplate.keys("device:heartbeat:*");
+            Set<String> keys = scanKeys("device:heartbeat:*", 200);
             long now = System.currentTimeMillis();
             int timeoutCount = 0;
             
@@ -547,13 +557,16 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             DeviceWebSocketServer.cleanupDisconnectedSessions();
             
             // 获取所有在线设备
-            Set<String> onlineKeys = redisTemplate.keys("device:status:online");
-            if (onlineKeys != null && !onlineKeys.isEmpty()) {
-                System.out.println("检查 " + onlineKeys.size() + " 个在线设备的WebSocket连接状态");
-                
-                for (String key : onlineKeys) {
+            Set<String> statusKeys = scanKeys("device:status:*", 200);
+            if (statusKeys != null && !statusKeys.isEmpty()) {
+                System.out.println("检查 " + statusKeys.size() + " 个设备的WebSocket连接状态");
+                for (String key : statusKeys) {
                     try {
                         Long deviceId = Long.parseLong(key.substring("device:status:".length()));
+                        String status = redisTemplate.opsForValue().get(key);
+                        if (!"online".equals(status)) {
+                            continue;
+                        }
                         
                         // 检查该设备是否有活跃的WebSocket连接
                         boolean hasActiveConnection = DeviceWebSocketServer.hasActiveConnection(deviceId);
@@ -579,6 +592,45 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             System.err.println("WebSocket连接状态检查异常: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private Set<String> scanKeys(String pattern, long count) {
+        Set<String> result = new java.util.HashSet<>();
+        org.springframework.data.redis.connection.RedisConnection conn = null;
+        Cursor<byte[]> cursor = null;
+        try {
+            ScanOptions options = ScanOptions.scanOptions().match(pattern).count(count).build();
+            conn = redisTemplate.getConnectionFactory().getConnection();
+            cursor = conn.scan(options);
+            while (cursor.hasNext()) {
+                byte[] key = cursor.next();
+                result.add(new String(key, StandardCharsets.UTF_8));
+            }
+        } catch (Exception e) {
+            System.err.println("SCAN keys 失败: " + e.getMessage() + "，重试一次");
+            // 轻量重试一次
+            try {
+                if (cursor != null) { try { cursor.close(); } catch (Exception ignore) {} }
+                if (conn != null) { try { conn.close(); } catch (Exception ignore) {} }
+                Thread.sleep(100);
+                conn = redisTemplate.getConnectionFactory().getConnection();
+                cursor = conn.scan(ScanOptions.scanOptions().match(pattern).count(count).build());
+                while (cursor.hasNext()) {
+                    byte[] key = cursor.next();
+                    result.add(new String(key, StandardCharsets.UTF_8));
+                }
+            } catch (Exception ex) {
+                System.err.println("SCAN keys 二次失败: " + ex.getMessage());
+            }
+        } finally {
+            if (cursor != null) {
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+            if (conn != null) {
+                try { conn.close(); } catch (Exception ignore) {}
+            }
+        }
+        return result;
     }
     
     /**

@@ -72,13 +72,18 @@ public class LimitAspect {
         ImmutableList<String> keys = ImmutableList.of(StringUtils.join(limitAnnotation.prefix() + "_", key, ip));
         String luaScript = buildLuaScript();
         RedisScript<Number> redisScript = new DefaultRedisScript<>(luaScript, Number.class);
-        Number count = limitRedisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
+        Number count = null;
+        try {
+            count = limitRedisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
+        } catch (Exception e) {
+            log.warn("限流Redis执行异常，降级放行: key={}, err={}", keys, e.toString());
+            return point.proceed();
+        }
         log.info("IP:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, count, keys, name);
         if (count != null && count.intValue() <= limitCount) {
             return point.proceed();
-        } else {
-            throw new LimitAccessException("接口访问超出频率限制");
         }
+        throw new LimitAccessException("接口访问超出频率限制");
     }
 
     /**

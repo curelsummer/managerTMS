@@ -12,12 +12,14 @@ import cc.mrbird.febs.system.service.MenuService;
 import cc.mrbird.febs.system.service.RoleService;
 import cc.mrbird.febs.system.service.UserConfigService;
 import cc.mrbird.febs.system.service.UserService;
+import cn.hutool.core.collection.CollUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service("cacheService")
@@ -51,42 +53,66 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public User getUser(String username) throws Exception {
-        String userString = this.redisService.get(FebsConstant.USER_CACHE_PREFIX + username);
-        if (StringUtils.isBlank(userString))
-            throw new Exception();
-        else
-            return this.mapper.readValue(userString, User.class);
+        String key = FebsConstant.USER_CACHE_PREFIX + username.toLowerCase();
+        String userString = redisService.get(key);
+        if (StringUtils.isBlank(userString)) {
+            User dbUser = userMapper.findDetail(username);
+            if (dbUser != null) {
+                redisService.set(key, mapper.writeValueAsString(dbUser), 1800L);
+            }
+            return dbUser;   // 允许返回 null（用户不存在）
+        }
+        return mapper.readValue(userString, User.class);
     }
 
     @Override
     public List<Role> getRoles(String username) throws Exception {
-        String roleListString = this.redisService.get(FebsConstant.USER_ROLE_CACHE_PREFIX + username);
+        String key = FebsConstant.USER_ROLE_CACHE_PREFIX + username.toLowerCase();
+        String roleListString = redisService.get(key);
         if (StringUtils.isBlank(roleListString)) {
-            throw new Exception();
-        } else {
-            JavaType type = mapper.getTypeFactory().constructParametricType(List.class, Role.class);
-            return this.mapper.readValue(roleListString, type);
+            List<Role> dbRoles = roleService.findUserRole(username);
+            if (CollUtil.isNotEmpty(dbRoles)) {
+                redisService.set(key, mapper.writeValueAsString(dbRoles), 1800L);
+            }
+            return CollUtil.isEmpty(dbRoles) ? Collections.emptyList() : dbRoles;
         }
+        JavaType type = mapper.getTypeFactory().constructParametricType(List.class, Role.class);
+        return mapper.readValue(roleListString, type);
     }
 
     @Override
     public List<Menu> getPermissions(String username) throws Exception {
-        String permissionListString = this.redisService.get(FebsConstant.USER_PERMISSION_CACHE_PREFIX + username);
+        String key = FebsConstant.USER_PERMISSION_CACHE_PREFIX + username.toLowerCase();
+        String permissionListString = redisService.get(key);
+
+        // 1. Redis 未命中，走数据库
         if (StringUtils.isBlank(permissionListString)) {
-            throw new Exception();
-        } else {
-            JavaType type = mapper.getTypeFactory().constructParametricType(List.class, Menu.class);
-            return this.mapper.readValue(permissionListString, type);
+            List<Menu> dbPerms = menuService.findUserPermissions(username);
+            if (CollUtil.isNotEmpty(dbPerms)) {
+                // 2. 写回 Redis，30 min 过期
+                redisService.set(key, mapper.writeValueAsString(dbPerms), 1800L);
+            }
+            // 3. 永不返回 null，避免上层强转异常
+            return CollUtil.isEmpty(dbPerms) ? Collections.emptyList() : dbPerms;
         }
+
+        // 4. Redis 命中，反序列化
+        JavaType type = mapper.getTypeFactory().constructParametricType(List.class, Menu.class);
+        return mapper.readValue(permissionListString, type);
     }
 
     @Override
     public UserConfig getUserConfig(String userId) throws Exception {
-        String userConfigString = this.redisService.get(FebsConstant.USER_CONFIG_CACHE_PREFIX + userId);
-        if (StringUtils.isBlank(userConfigString))
-            throw new Exception();
-        else
-            return this.mapper.readValue(userConfigString, UserConfig.class);
+        String key = FebsConstant.USER_CONFIG_CACHE_PREFIX + userId;
+        String userConfigString = redisService.get(key);
+        if (StringUtils.isBlank(userConfigString)) {
+            UserConfig dbConfig = userConfigService.findByUserId(userId);
+            if (dbConfig != null) {
+                redisService.set(key, mapper.writeValueAsString(dbConfig), 1800L);
+            }
+            return dbConfig;   // 允许返回 null（无配置）
+        }
+        return mapper.readValue(userConfigString, UserConfig.class);
     }
 
     @Override

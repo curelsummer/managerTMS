@@ -1,5 +1,6 @@
 server:
   port: 9527
+  address: 0.0.0.0  # 监听所有网络接口，允许外部访问
 
 minio:
   host: http://127.0.0.1:9000
@@ -8,16 +9,31 @@ minio:
   secret-key: minioadmin
   bucket: voice
 
-  # mqtt配置
-mqtt-toilet:
-  url: tcp://broker.emqx.io:1883
-  clientId: mqttx_56af8cde
-  topics: xiot/data
+   #mqtt配置（设备状态/心跳）
+mqtt-device:
+  url: tcp://119.45.18.51:1883
+  clientId: mqttx_123
+  topics: device/+/status,device/+/heartbeat
   username: test
   password: test
   timeout: 10
   keepAliveInterval: 20
   defaultTopic: test
+
+  # mqtt配置（处方下发）
+mqtt-tms:
+  url: tcp://119.45.18.51:1883
+  #url: tcp://127.0.0.1:1883
+  clientId: mqttx_56af8cde
+  topics: device/+/prescription-ack
+  username: test
+  password: test
+  timeout: 10
+  keepAliveInterval: 20
+  defaultTopic: device/+/prescription
+
+
+
 
 spring:
   mail:
@@ -89,10 +105,11 @@ spring:
     jedis:
       pool:
         min-idle: 8
-        max-idle: 500
-        max-active: 2000
-        max-wait: 10000
-    timeout: 0
+        max-idle: 50
+        max-active: 200
+        max-wait: 3000
+    timeout: 3000
+    connect-timeout: 3s
 
 
 #mybatis plus 设置
@@ -112,6 +129,10 @@ management:
       exposure:
         include: [ 'httptrace', 'metrics' ]
 
+  health:
+    mail:
+      enabled: false
+
 
 febs:
   # 是否异步记录用户操作日志
@@ -126,3 +147,6 @@ febs:
     anonUrl: /login,/logout/**,/regist,/regist/user,/user/check/**,/file/**,/api/**,/imagesWeb/**,/cos/enterprise-info/**,/cos/**,/minio/**,/patient/** 
     # token有效期，单位秒
     jwtTimeOut: 3600
+  # 邮件功能总开关（false 时跳过发送）
+  mail:
+    enabled: false

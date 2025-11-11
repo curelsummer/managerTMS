@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "mqtt-toilet")
+@ConfigurationProperties(prefix = "mqtt-device")
 public class DeviceMqttProperties {
 
     private String url;

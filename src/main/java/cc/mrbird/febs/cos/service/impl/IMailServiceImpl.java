@@ -24,14 +24,17 @@ public class IMailServiceImpl implements IMailService {
     /**
      * Spring Boot 提供了一个发送邮件的简单抽象，使用的是下面这个接口，这里直接注入即可使用
      */
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
     /**
      * 配置文件中我的qq邮箱
      */
-    @Value("${spring.mail.from}")
+    @Value("${spring.mail.from:}")
     private String from;
+
+    @Value("${febs.mail.enabled:true}")
+    private boolean mailEnabled;
 
     /**
      * 简单文本邮件
@@ -42,6 +45,10 @@ public class IMailServiceImpl implements IMailService {
      */
     @Override
     public void sendSimpleMail(String to, String subject, String content) {
+        if (!mailEnabled || mailSender == null) {
+            logger.warn("邮件功能已禁用或未配置，跳过发送 simple 邮件。");
+            return;
+        }
         //创建SimpleMailMessage对象
         SimpleMailMessage message = new SimpleMailMessage();
         //邮件发送人
@@ -66,6 +73,10 @@ public class IMailServiceImpl implements IMailService {
     @Override
     @Async
     public void sendHtmlMail(String to, String subject, String content) {
+        if (!mailEnabled || mailSender == null) {
+            logger.warn("邮件功能已禁用或未配置，跳过发送 HTML 邮件。");
+            return;
+        }
         //获取MimeMessage对象
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper;
@@ -98,6 +109,10 @@ public class IMailServiceImpl implements IMailService {
      */
     @Override
     public void sendAttachmentsMail(String to, String subject, String content, String filePath) {
+        if (!mailEnabled || mailSender == null) {
+            logger.warn("邮件功能已禁用或未配置，跳过发送附件邮件。");
+            return;
+        }
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

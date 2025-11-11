@@ -1,0 +1,44 @@
+2025-10-31 08:34:47.753 febs [http-nio-0.0.0.0-9527-exec-2] ERROR c.m.f.c.authentication.JWTFilter - token已经过期
+2025-10-31 08:34:47.754 febs [http-nio-0.0.0.0-9527-exec-2] ERROR c.m.f.c.authentication.JWTFilter - token已经过期
+2025-10-31 09:44:44.495 febs [main] ERROR o.apache.catalina.util.LifecycleBase - Failed to start component [Connector[HTTP/1.1-9527]]
+org.apache.catalina.LifecycleException: Protocol handler start failed
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:960)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+	at org.apache.catalina.core.StandardService.addConnector(StandardService.java:225)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.addPreviouslyRemovedConnectors(TomcatWebServer.java:259)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.start(TomcatWebServer.java:197)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.startWebServer(ServletWebServerApplicationContext.java:300)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.finishRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:549)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:140)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316)
+	at org.springframework.boot.builder.SpringApplicationBuilder.run(SpringApplicationBuilder.java:139)
+	at cc.mrbird.febs.FebsApplication.main(FebsApplication.java:19)
+Caused by: java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method)
+	at sun.nio.ch.Net.bind(Net.java:461)
+	at sun.nio.ch.Net.bind(Net.java:453)
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:222)
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:85)
+	at org.apache.tomcat.util.net.NioEndpoint.initServerSocket(NioEndpoint.java:236)
+	at org.apache.tomcat.util.net.NioEndpoint.bind(NioEndpoint.java:210)
+	at org.apache.tomcat.util.net.AbstractEndpoint.start(AbstractEndpoint.java:1108)
+	at org.apache.coyote.AbstractProtocol.start(AbstractProtocol.java:550)
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:957)
+	... 13 common frames omitted
+2025-10-31 09:44:44.507 febs [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The Tomcat connector configured to listen on port 9527 failed to start. The port may already be in use or the connector may be misconfigured.
+
+Action:
+
+Verify the connector's configuration, identify and stop any process that's listening on port 9527, or configure this application to listen on another port.
+

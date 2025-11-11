@@ -4,8 +4,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
@@ -13,7 +13,6 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 import java.time.Instant;
@@ -26,7 +25,7 @@ public class DeviceMqttConfig {
     private final DeviceMqttInboundMessageHandler deviceMqttInboundMessageHandler;
 
     public DeviceMqttConfig(DeviceMqttProperties prop,
-                            DeviceMqttInboundMessageHandler deviceMqttInboundMessageHandler) {
+                            @Lazy DeviceMqttInboundMessageHandler deviceMqttInboundMessageHandler) {
         this.prop = prop;
         this.deviceMqttInboundMessageHandler = deviceMqttInboundMessageHandler;
     }
@@ -45,8 +44,15 @@ public class DeviceMqttConfig {
         return factory;
     }
 
+    @Bean("toiletMqttOutboundChannel")
+    public DirectChannel toiletMqttOutboundChannel() {
+        DirectChannel channel = new DirectChannel();
+        // 手动订阅消息处理器，避免 @ServiceActivator 导致的循环依赖
+        channel.subscribe(mqttOutbound(mqttClientFactory()));
+        return channel;
+    }
+
     @Bean("toiletMqttOutbound")
-    @ServiceActivator(inputChannel = "toiletMqttOutboundChannel")
     public MessageHandler mqttOutbound(@Qualifier("toiletMqttClientFactory") MqttPahoClientFactory mqttClientFactory) {
         MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(
                 prop.getClientId() + "-pub-" + Instant.now().toEpochMilli(), mqttClientFactory);
@@ -59,9 +65,12 @@ public class DeviceMqttConfig {
         return messageHandler;
     }
 
-    @Bean("toiletMqttOutboundChannel")
-    public MessageChannel toiletMqttOutboundChannel() {
-        return new DirectChannel();
+    @Bean("toiletMqttInboundChannel")
+    public DirectChannel toiletMqttInboundChannel() {
+        DirectChannel channel = new DirectChannel();
+        // 手动订阅消息处理器，避免 @ServiceActivator 导致的循环依赖
+        channel.subscribe(deviceMqttInboundMessageHandler);
+        return channel;
     }
 
     @Bean("toiletMqttInbound")
@@ -73,16 +82,5 @@ public class DeviceMqttConfig {
         adapter.setQos(2);
         adapter.setOutputChannel(toiletMqttInboundChannel());
         return adapter;
-    }
-
-    @Bean("toiletInboundMessageHandler")
-    @ServiceActivator(inputChannel = "toiletMqttInboundChannel")
-    public MessageHandler InboundMessageHandler() {
-        return deviceMqttInboundMessageHandler;
-    }
-
-    @Bean("toiletMqttInboundChannel")
-    public MessageChannel toiletMqttInboundChannel() {
-        return new DirectChannel();
     }
 }

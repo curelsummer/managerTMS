@@ -1,7 +1,7 @@
 package cc.mrbird.febs.system.service.impl;
 
-import cc.mrbird.febs.system.domain.Prescription;
 import cc.mrbird.febs.system.dao.PrescriptionMapper;
+import cc.mrbird.febs.system.domain.Prescription;
 import cc.mrbird.febs.system.service.PrescriptionService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserRole;
@@ -9,11 +9,15 @@ import cc.mrbird.febs.system.service.UserRoleService;
 import cc.mrbird.febs.system.service.UserService;
 import cc.mrbird.febs.system.dao.DepartmentMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("prescriptionService")
 public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Prescription> implements PrescriptionService {
@@ -88,5 +92,39 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
         wrapper.orderByDesc("created_at");
         
         return this.baseMapper.selectPage(page, wrapper);
+    }
+
+    @Override
+    public Map<String, Object> getByPatient(String patientId) {
+        if (!StringUtils.hasText(patientId)) {
+            return null;
+        }
+        Long pid;
+        try {
+            pid = Long.valueOf(patientId);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        LambdaQueryWrapper<Prescription> qw = new LambdaQueryWrapper<Prescription>()
+            .eq(Prescription::getPatientId, pid)
+            .orderByDesc(Prescription::getUpdatedAt)
+            .last("limit 1");
+        Prescription p = this.baseMapper.selectOne(qw);
+        if (p == null) {
+            return null;
+        }
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("prescriptionId", p.getId());
+        dto.put("patientId", p.getPatientId());
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("presStrength", p.getPresStrength());
+        parameters.put("presFreq", p.getPresFreq());
+        parameters.put("lastTime", p.getLastTime());
+        parameters.put("pauseTime", p.getPauseTime());
+        parameters.put("repeatCount", p.getRepeatCount());
+        parameters.put("totalCount", p.getTotalCount());
+        parameters.put("totalTime", p.getTotalTime());
+        dto.put("parameters", parameters);
+        return dto;
     }
 } 

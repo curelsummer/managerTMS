@@ -73,9 +73,30 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+        
+        // 动态设置允许的来源
+        String origin = httpServletRequest.getHeader("Origin");
+        if (origin != null) {
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", origin);
+        }
+        
+        // 允许携带凭证（如 Cookie、Authorization 头）
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        
+        // 允许的请求方法
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE,PATCH");
+        
+        // 动态设置允许的请求头
+        String requestHeaders = httpServletRequest.getHeader("Access-Control-Request-Headers");
+        if (requestHeaders != null) {
+            httpServletResponse.setHeader("Access-Control-Allow-Headers", requestHeaders);
+        } else {
+            httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authentication,Content-Type,X-Requested-With");
+        }
+        
+        // 预检请求的缓存时间（秒）
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+        
         // 跨域时会首先发送一个 option请求，这里我们给 option请求直接返回正常状态
         if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
             httpServletResponse.setStatus(HttpStatus.OK.value());
