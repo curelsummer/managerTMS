@@ -1,0 +1,35 @@
+# 编译输出目录
+target/
+*.jar
+*.war
+*.ear
+
+# IDE相关文件
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### Maven Wrapper ###
+.mvn/wrapper/maven-wrapper.jar
+!/.mvn/wrapper/maven-wrapper.jar
+
+# 排除根目录的target，但允许源码目录下的target（如果需要）
+!**/src/main/**/target/
+!**/src/test/**/target/
