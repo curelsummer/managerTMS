@@ -33,15 +33,9 @@ public class ThresholdServiceImpl implements ThresholdService {
         if (patient == null) {
             return false;
         }
-        // 这里假设 Patient 增加了阈值字段，可按你的实际字段名替换
-        // 示例：扩展字段通过 getCode() 暂代（仅占位，建议改为真实字段）
-        // 判定逻辑：存在且在 0-100 范围内
-        Integer threshold = null;
-        // TODO: 使用真实字段，例如 patient.getThreshold()
-        if (threshold == null) {
-            return false;
-        }
-        return threshold >= 0 && threshold <= 100;
+        // 读取新增字段 thresholdValue（映射到列 threshold_value）
+        Integer threshold = patient.getThresholdValue();
+        return threshold != null && threshold >= 0 && threshold <= 100;
     }
 }
 

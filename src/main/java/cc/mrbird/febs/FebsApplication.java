@@ -15,7 +15,14 @@ import org.mybatis.spring.annotation.MapperScan;
 public class FebsApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(FebsApplication.class)
-                .run(args);
+        System.out.println("[BOOT] Starting FebsApplication ...");
+        try {
+            new SpringApplicationBuilder(FebsApplication.class).run(args);
+        } catch (Throwable t) {
+            System.err.println("[BOOT] Application failed to start:");
+            t.printStackTrace();
+            // 确保非零退出码
+            System.exit(1);
+        }
     }
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.annotation.TableField;
 
 @Data
 public class Patient implements Serializable {
@@ -37,4 +38,18 @@ public class Patient implements Serializable {
     private Long updatedBy;
     /** 最近操作时间 */
     private Date updatedAt;
+
+    /** 阈值(0-100) */
+    @TableField("threshold_value")
+    private Integer thresholdValue;
+    /** 阈值设置时间 */
+    @TableField("threshold_set_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date thresholdSetAt;
+    /** 阈值设置人ID */
+    @TableField("threshold_set_by")
+    private Long thresholdSetBy;
+    /** 阈值来源: manual/measure */
+    @TableField("threshold_source")
+    private String thresholdSource;
 } 

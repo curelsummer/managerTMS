@@ -4,7 +4,6 @@ import cc.mrbird.febs.cos.entity.DeviceType;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
 
@@ -30,11 +29,4 @@ public interface IDeviceTypeService extends IService<DeviceType> {
      * @return 结果
      */
     LinkedHashMap<String, Object> homeData();
-
-    /**
-     * mqtt数据解析
-     *
-     * @param message 消息内容
-     */
-    void setDeviceRecordMqtt(String message);
 }

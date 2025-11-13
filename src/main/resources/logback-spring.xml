@@ -1,54 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="60 seconds" debug="false">
-    <contextName>febs</contextName>
-    <property name="log.path" value="log" />
-    <property name="log.maxHistory" value="15" />
-    <property name="log.colorPattern" value="%d{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/>
-    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n" />
+<configuration>
+    <property name="MQTT_LOG_DIR" value="logs/mqtt"/>
 
-    <!--输出到控制台-->
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 控制台输出，便于看到启动期异常堆栈 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${log.colorPattern}</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!--输出到文件-->
-    <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 应用通用文件输出，便于在看不到控制台时排查 -->
+    <property name="APP_LOG_DIR" value="logs/app"/>
+    <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/info/info.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <fileNamePattern>${APP_LOG_DIR}/%d{yyyy-MM-dd}/app.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>${log.pattern}</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
 
-    <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/error/error.%d{yyyy-MM-dd}.log</fileNamePattern>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${log.pattern}</pattern>
-        </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+    <appender name="MQTT_SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator class="ch.qos.logback.classic.sift.MDCBasedDiscriminator">
+            <key>direction</key>
+            <defaultValue>inbound</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="MQTT_${direction}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${MQTT_LOG_DIR}/%d{yyyy-MM-dd}/${direction}.log</fileNamePattern>
+                    <maxHistory>30</maxHistory>
+                    <totalSizeCap>2GB</totalSizeCap>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
     </appender>
 
-    <root level="debug">
-        <appender-ref ref="console" />
-    </root>
+    <appender name="ASYNC_MQTT" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>8192</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="MQTT_SIFT"/>
+    </appender>
 
-    <root level="info">
-        <appender-ref ref="file_info" />
-        <appender-ref ref="file_error" />
+    <logger name="MQTT_AUDIT" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_MQTT"/>
+    </logger>
+
+    <!-- Root 日志器，保证常规日志/异常都会输出到控制台 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APP_FILE"/>
     </root>
 </configuration>

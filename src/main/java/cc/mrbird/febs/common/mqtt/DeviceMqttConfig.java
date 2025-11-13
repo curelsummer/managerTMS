@@ -14,6 +14,7 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.time.Instant;
 
@@ -31,12 +32,17 @@ public class DeviceMqttConfig {
     }
 
     @Bean("toiletMqttClientFactory")
+    @ConditionalOnProperty(prefix = "mqtt-device", name = "url")
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setServerURIs(new String[]{prop.getUrl()});
-        mqttConnectOptions.setUserName(prop.getUsername());
-        mqttConnectOptions.setPassword(prop.getPassword().toCharArray());
+        if (prop.getUsername() != null && !prop.getUsername().isEmpty()) {
+            mqttConnectOptions.setUserName(prop.getUsername());
+        }
+        if (prop.getPassword() != null) {
+            mqttConnectOptions.setPassword(prop.getPassword().toCharArray());
+        }
         // 客户端断线时暂时不清除，直到超时注销
         mqttConnectOptions.setCleanSession(false);
         mqttConnectOptions.setAutomaticReconnect(true);
@@ -53,6 +59,7 @@ public class DeviceMqttConfig {
     }
 
     @Bean("toiletMqttOutbound")
+    @ConditionalOnProperty(prefix = "mqtt-device", name = "url")
     public MessageHandler mqttOutbound(@Qualifier("toiletMqttClientFactory") MqttPahoClientFactory mqttClientFactory) {
         MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(
                 prop.getClientId() + "-pub-" + Instant.now().toEpochMilli(), mqttClientFactory);
@@ -74,10 +81,23 @@ public class DeviceMqttConfig {
     }
 
     @Bean("toiletMqttInbound")
+    @ConditionalOnProperty(prefix = "mqtt-device", name = "url")
     public MessageProducerSupport mqttInbound(@Qualifier("toiletMqttClientFactory") MqttPahoClientFactory mqttClientFactory) {
+        String topics = prop.getTopics();
+        String[] subscribeTopics;
+        if (topics == null || topics.trim().isEmpty()) {
+            // 默认仅订阅 patient-info-up，避免未配置导致启动失败
+            subscribeTopics = new String[]{"+/+/patient-info-up"};
+        } else {
+            // 兼容逗号分隔或单主题
+            subscribeTopics = topics.contains(",") ?
+                java.util.Arrays.stream(topics.split(","))
+                    .map(String::trim).filter(s -> !s.isEmpty()).toArray(String[]::new)
+                : new String[]{topics.trim()};
+        }
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(prop.getClientId() + "-sub-" + Instant.now().toEpochMilli(), mqttClientFactory,
-                        prop.getTopics());
+                        subscribeTopics);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(2);
         adapter.setOutputChannel(toiletMqttInboundChannel());

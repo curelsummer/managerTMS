@@ -1,6 +1,7 @@
 package cc.mrbird.febs.common.mqtt;
 
 import cn.hutool.core.map.MapUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
@@ -8,18 +9,23 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MqttClientService {
 
     // 处方/指令下发通道（由 PrescriptionMqttConfig 暴露）
-    @Resource(name = "tmsMqttOutboundChannel")
+    @Autowired(required = false)
+    @Qualifier("tmsMqttOutboundChannel")
     private MessageChannel outboundChannel;
+
+    private final MqttAuditLogger mqttAuditLogger;
 
     public void sendThresholdRequest(String deviceType, String deviceId, String reason) {
         String topic = MqttTopics.buildDownTopic(deviceType, deviceId, "threshold-request-down");
@@ -52,7 +58,26 @@ public class MqttClientService {
             .setHeader(MqttHeaders.QOS, qos)
             .setHeader(MqttHeaders.RETAINED, retained)
             .build();
-        outboundChannel.send(msg);
+        try {
+            if (outboundChannel != null) {
+                outboundChannel.send(msg);
+                mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "ok", null);
+            } else {
+                mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "skip", "tmsMqttOutboundChannel is not configured");
+                log.warn("MQTT 下发已跳过：未配置 mqtt-tms.url，topic={}", topic);
+            }
+        } catch (Exception e) {
+            mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "fail", e.getMessage());
+            throw e;
+        }
+    }
+
+    private String toJsonString(Object obj) {
+        try {
+            return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            return String.valueOf(obj);
+        }
     }
 }
 

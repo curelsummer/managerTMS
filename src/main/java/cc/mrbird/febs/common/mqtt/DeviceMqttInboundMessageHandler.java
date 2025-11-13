@@ -1,7 +1,6 @@
 package cc.mrbird.febs.common.mqtt;
 
 import cc.mrbird.febs.common.mqtt.handler.PatientInfoUpHandler;
-import cc.mrbird.febs.cos.service.IDeviceTypeService;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,23 +15,30 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DeviceMqttInboundMessageHandler implements MessageHandler {
 
-    private final IDeviceTypeService deviceTypeService;
     private final PatientInfoUpHandler patientInfoUpHandler;
+    private final MqttAuditLogger mqttAuditLogger;
 
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
+        // 审计日志（入站）
+        try {
+            mqttAuditLogger.logInbound(message);
+        } catch (Exception ignore) {
+        }
+
         if (message.getPayload() == null || StrUtil.isEmpty(message.getPayload().toString())) {
             return;
         }
         String topic = String.valueOf(message.getHeaders().getOrDefault("mqtt_receivedTopic", ""));
         String payload = message.getPayload().toString();
         if (StrUtil.isBlank(topic)) {
-            deviceTypeService.setDeviceRecordMqtt(payload);
+            // 主题异常也记为 unknown
+            try { mqttAuditLogger.logInboundUnknown(topic, payload); } catch (Exception ignore) {}
             return;
         }
         MqttTopics.TopicParts parts = MqttTopics.parse(topic);
         if (parts == null) {
-            deviceTypeService.setDeviceRecordMqtt(payload);
+            try { mqttAuditLogger.logInboundUnknown(topic, payload); } catch (Exception ignore) {}
             return;
         }
         switch (parts.getMsgType()) {
@@ -40,7 +46,9 @@ public class DeviceMqttInboundMessageHandler implements MessageHandler {
                 patientInfoUpHandler.handle(topic, payload);
                 break;
             default:
-                deviceTypeService.setDeviceRecordMqtt(payload);
+                // 未识别类型：写入 unknown 审计日志
+                try { mqttAuditLogger.logInboundUnknown(topic, payload); } catch (Exception ignore) {}
+                break;
         }
     }
 

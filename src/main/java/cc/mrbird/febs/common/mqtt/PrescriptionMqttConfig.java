@@ -9,6 +9,7 @@ import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.time.Instant;
 
@@ -25,12 +26,17 @@ public class PrescriptionMqttConfig {
     }
 
     @Bean("tmsMqttClientFactory")
+    @ConditionalOnProperty(prefix = "mqtt-tms", name = "url")
     public MqttPahoClientFactory tmsMqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions opts = new MqttConnectOptions();
         opts.setServerURIs(new String[]{prop.getUrl()});
-        opts.setUserName(prop.getUsername());
-        opts.setPassword(prop.getPassword().toCharArray());
+        if (prop.getUsername() != null && !prop.getUsername().isEmpty()) {
+            opts.setUserName(prop.getUsername());
+        }
+        if (prop.getPassword() != null) {
+            opts.setPassword(prop.getPassword().toCharArray());
+        }
         opts.setCleanSession(false);
         opts.setAutomaticReconnect(true);
         factory.setConnectionOptions(opts);
@@ -41,11 +47,16 @@ public class PrescriptionMqttConfig {
     public DirectChannel tmsMqttOutboundChannel() {
         DirectChannel channel = new DirectChannel();
         // 手动订阅消息处理器，避免 @ServiceActivator 导致的循环依赖
-        channel.subscribe(tmsMqttOutbound(tmsMqttClientFactory()));
+        try {
+            channel.subscribe(tmsMqttOutbound(tmsMqttClientFactory()));
+        } catch (Exception e) {
+            // 如果未配置 url，tmsMqttClientFactory 不会创建，此处退化为没有下游订阅者的直连通道
+        }
         return channel;
     }
 
     @Bean("tmsMqttOutbound")
+    @ConditionalOnProperty(prefix = "mqtt-tms", name = "url")
     public MessageHandler tmsMqttOutbound(@Qualifier("tmsMqttClientFactory") MqttPahoClientFactory clientFactory) {
         MqttPahoMessageHandler handler = new MqttPahoMessageHandler(
             prop.getClientId() + "-pub-" + Instant.now().toEpochMilli(), clientFactory);
