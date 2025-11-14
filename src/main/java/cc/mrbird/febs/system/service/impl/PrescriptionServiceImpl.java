@@ -3,6 +3,8 @@ package cc.mrbird.febs.system.service.impl;
 import cc.mrbird.febs.system.dao.PrescriptionMapper;
 import cc.mrbird.febs.system.domain.Prescription;
 import cc.mrbird.febs.system.service.PrescriptionService;
+import cc.mrbird.febs.system.domain.PatientPrescription;
+import cc.mrbird.febs.system.service.PatientPrescriptionService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserRole;
 import cc.mrbird.febs.system.service.UserRoleService;
@@ -30,6 +32,9 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
     
     @Autowired
     private DepartmentMapper departmentMapper;
+
+    @Autowired(required = false)
+    private PatientPrescriptionService patientPrescriptionService;
 
     @Override
     public IPage<Prescription> findPrescriptions(IPage<Prescription> page, Prescription prescription, Long userId) {
@@ -105,11 +110,26 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
         } catch (NumberFormatException e) {
             return null;
         }
-        LambdaQueryWrapper<Prescription> qw = new LambdaQueryWrapper<Prescription>()
-            .eq(Prescription::getPatientId, pid)
-            .orderByDesc(Prescription::getUpdatedAt)
-            .last("limit 1");
-        Prescription p = this.baseMapper.selectOne(qw);
+        Prescription p = null;
+        // 1) 优先从患者-处方关联表按最近使用选择（last_used_at 最大，NULL 视为最早）
+        if (patientPrescriptionService != null) {
+            PatientPrescription pp = patientPrescriptionService.getOne(
+                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<PatientPrescription>()
+                    .eq(PatientPrescription::getPatientId, pid)
+                    .last("order by (last_used_at is null), last_used_at desc limit 1")
+            );
+            if (pp != null && pp.getPrescriptionId() != null) {
+                p = this.baseMapper.selectById(pp.getPrescriptionId());
+            }
+        }
+        // 2) 回退：仍按处方表中 patient_id 最新一条
+        if (p == null) {
+            LambdaQueryWrapper<Prescription> qw = new LambdaQueryWrapper<Prescription>()
+                .eq(Prescription::getPatientId, pid)
+                .orderByDesc(Prescription::getUpdatedAt)
+                .last("limit 1");
+            p = this.baseMapper.selectOne(qw);
+        }
         if (p == null) {
             return null;
         }

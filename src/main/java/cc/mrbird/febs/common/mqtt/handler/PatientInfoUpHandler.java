@@ -3,7 +3,6 @@ package cc.mrbird.febs.common.mqtt.handler;
 import cc.mrbird.febs.common.mqtt.MsgDedupService;
 import cc.mrbird.febs.common.mqtt.MqttClientService;
 import cc.mrbird.febs.common.mqtt.MqttTopics;
-import cc.mrbird.febs.cos.service.NotificationService;
 import cc.mrbird.febs.system.service.PrescriptionService;
 import cc.mrbird.febs.system.service.ThresholdService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +25,6 @@ public class PatientInfoUpHandler {
     private final ThresholdService thresholdService;
     private final PrescriptionService prescriptionService;
     private final MqttClientService mqttClientService;
-    private final NotificationService notificationService;
 
     public void handle(String topic, String payload) {
         MqttTopics.TopicParts p = MqttTopics.parse(topic);
@@ -62,10 +60,6 @@ public class PatientInfoUpHandler {
         Map<String, Object> prescription = prescriptionService.getByPatient(patientId);
         if (prescription == null || prescription.isEmpty()) {
             mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), new HashMap<>(), true);
-            try {
-                notificationService.notifyDoctor(patientId, "患者缺少处方，请尽快设定。");
-            } catch (Exception ignored) {
-            }
             return;
         }
         mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), prescription, true);

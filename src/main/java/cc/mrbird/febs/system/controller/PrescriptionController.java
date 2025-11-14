@@ -4,6 +4,7 @@ import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.Prescription;
 import cc.mrbird.febs.system.service.PrescriptionService;
+import cc.mrbird.febs.system.service.PatientPrescriptionService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class PrescriptionController {
     
     @Autowired
     private PrescriptionService prescriptionService;
+
+    @Autowired(required = false)
+    private PatientPrescriptionService patientPrescriptionService;
 
     /**
      * 获取所有处方列表
@@ -78,7 +82,15 @@ public class PrescriptionController {
             prescription.setPeriods(1);
         }
         
-        return prescriptionService.save(prescription);
+        boolean ok = prescriptionService.save(prescription);
+        // 若网页端设置了 patientId，则建立患者-处方绑定关系（去重由 Service 处理）
+        if (ok && prescription.getPatientId() != null && patientPrescriptionService != null) {
+            try {
+                patientPrescriptionService.recordBind(prescription.getPatientId(), prescription.getId());
+            } catch (Exception ignore) {
+            }
+        }
+        return ok;
     }
 
     /**
@@ -93,7 +105,15 @@ public class PrescriptionController {
         prescription.setUpdatedBy(userId);
         prescription.setUpdatedAt(new Date());
         
-        return prescriptionService.updateById(prescription);
+        boolean ok = prescriptionService.updateById(prescription);
+        // 若网页端更新时带有 patientId，则建立患者-处方绑定关系（去重由 Service 处理）
+        if (ok && prescription.getId() != null && prescription.getPatientId() != null && patientPrescriptionService != null) {
+            try {
+                patientPrescriptionService.recordBind(prescription.getPatientId(), prescription.getId());
+            } catch (Exception ignore) {
+            }
+        }
+        return ok;
     }
 
     /**

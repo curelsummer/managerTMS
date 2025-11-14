@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class DeviceMqttInboundMessageHandler implements MessageHandler {
 
     private final PatientInfoUpHandler patientInfoUpHandler;
+    private final cc.mrbird.febs.common.mqtt.handler.ThresholdResultUpHandler thresholdResultUpHandler;
     private final MqttAuditLogger mqttAuditLogger;
 
     @Override
@@ -44,6 +45,9 @@ public class DeviceMqttInboundMessageHandler implements MessageHandler {
         switch (parts.getMsgType()) {
             case "patient-info-up":
                 patientInfoUpHandler.handle(topic, payload);
+                break;
+            case "threshold-result-up":
+                thresholdResultUpHandler.handle(topic, payload);
                 break;
             default:
                 // 未识别类型：写入 unknown 审计日志
