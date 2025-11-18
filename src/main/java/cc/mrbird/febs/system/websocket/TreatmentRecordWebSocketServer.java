@@ -29,26 +29,26 @@ public class TreatmentRecordWebSocketServer {
     @OnOpen
     public void onOpen(Session session) {
         sessions.add(session);
-        System.out.println("=== 治疗记录WebSocket连接建立 ===");
-        System.out.println("端点: /ws/treatment-record");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("当前治疗记录连接数: " + sessions.size());
-        System.out.println("说明：此端点用于接收治疗记录信息");
+        // System.out.println("=== 治疗记录WebSocket连接建立 ===");
+        // System.out.println("端点: /ws/treatment-record");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("当前治疗记录连接数: " + sessions.size());
+        // System.out.println("说明：此端点用于接收治疗记录信息");
     }
 
     @OnClose
     public void onClose(Session session) {
         sessions.remove(session);
-        System.out.println("=== 治疗记录WebSocket连接断开 ===");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("当前总连接数: " + sessions.size());
+        // System.out.println("=== 治疗记录WebSocket连接断开 ===");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("当前总连接数: " + sessions.size());
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("=== 收到WebSocket客户端消息 ===");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("消息内容: " + message);
+        // System.out.println("=== 收到WebSocket客户端消息 ===");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("消息内容: " + message);
         
         try {
             // 解析客户端消息
@@ -60,18 +60,18 @@ public class TreatmentRecordWebSocketServer {
                 // 处理治疗记录创建
                 handleTreatmentRecordCreated(jsonNode, session);
             } else {
-                System.out.println("未知的消息类型: " + messageType);
+                // System.out.println("未知的消息类型: " + messageType);
             }
             
         } catch (Exception e) {
-            System.err.println("处理WebSocket消息失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("处理WebSocket消息失败: " + e.getMessage());
+            // e.printStackTrace();
             
             // 发送错误回复
             try {
                 sendErrorReply(session, "消息处理失败: " + e.getMessage());
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
             }
         }
     }
@@ -81,7 +81,7 @@ public class TreatmentRecordWebSocketServer {
      */
     private void handleTreatmentRecordCreated(JsonNode jsonNode, Session session) {
         try {
-            System.out.println("=== 处理治疗记录创建 ===");
+            // System.out.println("=== 处理治疗记录创建 ===");
             
             // 获取治疗记录服务
             TreatmentRecordService treatmentRecordService = getTreatmentRecordService();
@@ -93,24 +93,24 @@ public class TreatmentRecordWebSocketServer {
             boolean success = treatmentRecordService.saveTreatmentRecord(jsonNode);
             
             if (success) {
-                System.out.println("治疗记录保存成功");
+                // System.out.println("治疗记录保存成功");
                 // 发送成功确认
                 sendSuccessReply(session, "治疗记录保存成功");
             } else {
-                System.out.println("治疗记录保存失败");
+                // System.out.println("治疗记录保存失败");
                 // 发送失败确认
                 sendErrorReply(session, "治疗记录保存失败");
             }
             
         } catch (Exception e) {
-            System.err.println("处理治疗记录创建失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("处理治疗记录创建失败: " + e.getMessage());
+            // e.printStackTrace();
             
             // 发送错误回复
             try {
                 sendErrorReply(session, "处理治疗记录创建失败: " + e.getMessage());
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
             }
         }
     }
@@ -127,8 +127,8 @@ public class TreatmentRecordWebSocketServer {
                 return SpringContextUtil.getBean(TreatmentRecordService.class);
             }
         } catch (Exception e) {
-            System.err.println("获取治疗记录服务失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("获取治疗记录服务失败: " + e.getMessage());
+            // e.printStackTrace();
             return null;
         }
     }

@@ -30,26 +30,26 @@ public class PrescriptionExecutionWebSocketServer {
     @OnOpen
     public void onOpen(Session session) {
         sessions.add(session);
-        System.out.println("=== 处方执行WebSocket连接建立 ===");
-        System.out.println("端点: /ws/prescriptionexecution");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("当前处方执行连接数: " + sessions.size());
-        System.out.println("说明：此端点用于处理处方执行相关消息");
+        // System.out.println("=== 处方执行WebSocket连接建立 ===");
+        // System.out.println("端点: /ws/prescriptionexecution");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("当前处方执行连接数: " + sessions.size());
+        // System.out.println("说明：此端点用于处理处方执行相关消息");
     }
 
     @OnClose
     public void onClose(Session session) {
         sessions.remove(session);
-        System.out.println("=== 处方执行WebSocket连接断开 ===");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("当前总连接数: " + sessions.size());
+        // System.out.println("=== 处方执行WebSocket连接断开 ===");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("当前总连接数: " + sessions.size());
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("=== 收到WebSocket客户端消息 ===");
-        System.out.println("会话ID: " + session.getId());
-        System.out.println("消息内容: " + message);
+        // System.out.println("=== 收到WebSocket客户端消息 ===");
+        // System.out.println("会话ID: " + session.getId());
+        // System.out.println("消息内容: " + message);
         
         try {
             // 解析客户端消息
@@ -65,12 +65,12 @@ public class PrescriptionExecutionWebSocketServer {
                 // 处理处方状态更新
                 handlePrescriptionStatusUpdate(jsonNode, session);
             } else {
-                System.out.println("未知的消息类型: " + messageType);
+                // System.out.println("未知的消息类型: " + messageType);
             }
             
         } catch (Exception e) {
-            System.err.println("处理WebSocket消息失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("处理WebSocket消息失败: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
     
@@ -84,11 +84,11 @@ public class PrescriptionExecutionWebSocketServer {
             String clientInfo = jsonNode.get("clientInfo").asText();
             Date receivedTime = new Date();
             
-            System.out.println("=== 处方执行记录接收确认 ===");
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("状态: " + status);
-            System.out.println("客户端信息: " + clientInfo);
-            System.out.println("接收时间: " + receivedTime);
+            // System.out.println("=== 处方执行记录接收确认 ===");
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("状态: " + status);
+            // System.out.println("客户端信息: " + clientInfo);
+            // System.out.println("接收时间: " + receivedTime);
             
             // 更新处方执行记录状态
             updatePrescriptionExecutionStatus(executionId, status, clientInfo, receivedTime);
@@ -97,14 +97,14 @@ public class PrescriptionExecutionWebSocketServer {
             sendConfirmationReply(session, executionId, "SUCCESS");
             
         } catch (Exception e) {
-            System.err.println("处理处方执行记录接收确认失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("处理处方执行记录接收确认失败: " + e.getMessage());
+            // e.printStackTrace();
             
             // 发送错误回复
             try {
                 sendConfirmationReply(session, null, "ERROR");
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
             }
         }
     }
@@ -114,29 +114,29 @@ public class PrescriptionExecutionWebSocketServer {
      */
     private void updatePrescriptionExecutionStatus(Long executionId, String status, String clientInfo, Date receivedTime) {
         try {
-            System.out.println("=== 更新处方执行记录状态 ===");
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("新状态: " + status);
-            System.out.println("客户端信息: " + clientInfo);
-            System.out.println("接收时间: " + receivedTime);
+            // System.out.println("=== 更新处方执行记录状态 ===");
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("新状态: " + status);
+            // System.out.println("客户端信息: " + clientInfo);
+            // System.out.println("接收时间: " + receivedTime);
             
             // 通过ApplicationContext获取服务
             if (applicationContext != null) {
                 PrescriptionExecutionStatusService statusService = applicationContext.getBean(PrescriptionExecutionStatusService.class);
                 boolean success = statusService.updateExecutionStatus(executionId, status, clientInfo, receivedTime);
                 
-                if (success) {
-                    System.out.println("=== 数据库状态更新成功 ===");
-                } else {
-                    System.err.println("=== 数据库状态更新失败 ===");
-                }
+                // if (success) {
+                //     System.out.println("=== 数据库状态更新成功 ===");
+                // } else {
+                //     System.err.println("=== 数据库状态更新失败 ===");
+                // }
             } else {
-                System.err.println("ApplicationContext未初始化，无法更新数据库状态");
+                // System.err.println("ApplicationContext未初始化，无法更新数据库状态");
             }
             
         } catch (Exception e) {
-            System.err.println("更新处方执行记录状态失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("更新处方执行记录状态失败: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
     
@@ -152,13 +152,13 @@ public class PrescriptionExecutionWebSocketServer {
             String message = jsonNode.has("message") ? jsonNode.get("message").asText() : null;
             Date updateTime = new Date();
             
-            System.out.println("=== 处方状态更新 ===");
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("设备ID: " + deviceId);
-            System.out.println("状态: " + status);
-            System.out.println("进度: " + progress);
-            System.out.println("消息: " + message);
-            System.out.println("更新时间: " + updateTime);
+            // System.out.println("=== 处方状态更新 ===");
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("设备ID: " + deviceId);
+            // System.out.println("状态: " + status);
+            // System.out.println("进度: " + progress);
+            // System.out.println("消息: " + message);
+            // System.out.println("更新时间: " + updateTime);
             
             // 更新处方执行记录状态
             updatePrescriptionExecutionStatusWithProgress(executionId, status, deviceId, progress, message, updateTime);
@@ -167,14 +167,14 @@ public class PrescriptionExecutionWebSocketServer {
             sendStatusUpdateConfirmation(session, executionId, "SUCCESS");
             
         } catch (Exception e) {
-            System.err.println("处理处方状态更新失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("处理处方状态更新失败: " + e.getMessage());
+            // e.printStackTrace();
             
             // 发送错误回复
             try {
                 sendStatusUpdateConfirmation(session, null, "ERROR");
             } catch (Exception ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
             }
         }
     }
@@ -184,31 +184,31 @@ public class PrescriptionExecutionWebSocketServer {
      */
     private void updatePrescriptionExecutionStatusWithProgress(Long executionId, String status, Long deviceId, Integer progress, String message, Date updateTime) {
         try {
-            System.out.println("=== 开始更新处方执行记录状态（含进度） ===");
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("设备ID: " + deviceId);
-            System.out.println("新状态: " + status);
-            System.out.println("进度: " + progress);
-            System.out.println("消息: " + message);
-            System.out.println("更新时间: " + updateTime);
+            // System.out.println("=== 开始更新处方执行记录状态（含进度） ===");
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("设备ID: " + deviceId);
+            // System.out.println("新状态: " + status);
+            // System.out.println("进度: " + progress);
+            // System.out.println("消息: " + message);
+            // System.out.println("更新时间: " + updateTime);
             
             // 通过ApplicationContext获取服务
             if (applicationContext != null) {
                 PrescriptionExecutionStatusService statusService = applicationContext.getBean(PrescriptionExecutionStatusService.class);
                 boolean success = statusService.updateExecutionStatusWithProgress(executionId, status, deviceId, progress, message, updateTime);
                 
-                if (success) {
-                    System.out.println("=== 数据库状态更新成功 ===");
-                } else {
-                    System.err.println("=== 数据库状态更新失败 ===");
-                }
+                // if (success) {
+                //     System.out.println("=== 数据库状态更新成功 ===");
+                // } else {
+                //     System.err.println("=== 数据库状态更新失败 ===");
+                // }
             } else {
-                System.err.println("ApplicationContext未初始化，无法更新数据库状态");
+                // System.err.println("ApplicationContext未初始化，无法更新数据库状态");
             }
             
         } catch (Exception e) {
-            System.err.println("更新处方执行记录状态失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("更新处方执行记录状态失败: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
     
@@ -227,14 +227,14 @@ public class PrescriptionExecutionWebSocketServer {
             String replyMessage = objectMapper.writeValueAsString(reply);
             session.getBasicRemote().sendText(replyMessage);
             
-            System.out.println("=== 发送状态更新确认回复 ===");
-            System.out.println("会话ID: " + session.getId());
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("结果: " + result);
+            // System.out.println("=== 发送状态更新确认回复 ===");
+            // System.out.println("会话ID: " + session.getId());
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("结果: " + result);
             
         } catch (Exception e) {
-            System.err.println("发送状态更新确认回复失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("发送状态更新确认回复失败: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
     
@@ -253,21 +253,21 @@ public class PrescriptionExecutionWebSocketServer {
             String replyMessage = objectMapper.writeValueAsString(reply);
             session.getBasicRemote().sendText(replyMessage);
             
-            System.out.println("=== 发送确认回复 ===");
-            System.out.println("会话ID: " + session.getId());
-            System.out.println("执行记录ID: " + executionId);
-            System.out.println("结果: " + result);
+            // System.out.println("=== 发送确认回复 ===");
+            // System.out.println("会话ID: " + session.getId());
+            // System.out.println("执行记录ID: " + executionId);
+            // System.out.println("结果: " + result);
             
         } catch (Exception e) {
-            System.err.println("发送确认回复失败: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("发送确认回复失败: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
-        System.out.println("处方执行WebSocket发生错误：" + session.getId());
-        error.printStackTrace();
+        // System.out.println("处方执行WebSocket发生错误：" + session.getId());
+        // error.printStackTrace();
     }
 
     /**
@@ -275,24 +275,24 @@ public class PrescriptionExecutionWebSocketServer {
      */
     public static void broadcastPrescriptionExecutionCreated(Object data) {
         try {
-            System.out.println("=== 开始WebSocket广播 ===");
-            System.out.println("当前连接数: " + sessions.size());
+            // System.out.println("=== 开始WebSocket广播 ===");
+            // System.out.println("当前连接数: " + sessions.size());
             
             String message = objectMapper.writeValueAsString(data);
-            System.out.println("消息内容长度: " + message.length() + " 字符");
+            // System.out.println("消息内容长度: " + message.length() + " 字符");
             
             // 尝试解析消息内容，输出设备编号信息
-            try {
-                JsonNode jsonNode = objectMapper.readTree(message);
-                if (jsonNode.has("deviceInfo") && jsonNode.get("deviceInfo").has("deviceNo")) {
-                    Integer deviceNo = jsonNode.get("deviceInfo").get("deviceNo").asInt();
-                    System.out.println("广播消息包含设备编号: " + deviceNo);
-                } else {
-                    System.out.println("广播消息中未找到设备编号信息");
-                }
-            } catch (Exception e) {
-                System.out.println("解析广播消息内容失败: " + e.getMessage());
-            }
+            // try {
+            //     JsonNode jsonNode = objectMapper.readTree(message);
+            //     if (jsonNode.has("deviceInfo") && jsonNode.get("deviceInfo").has("deviceNo")) {
+            //         Integer deviceNo = jsonNode.get("deviceInfo").get("deviceNo").asInt();
+            //         System.out.println("广播消息包含设备编号: " + deviceNo);
+            //     } else {
+            //         System.out.println("广播消息中未找到设备编号信息");
+            //     }
+            // } catch (Exception e) {
+            //     System.out.println("解析广播消息内容失败: " + e.getMessage());
+            // }
             
             int successCount = 0;
             int failCount = 0;
@@ -302,26 +302,26 @@ public class PrescriptionExecutionWebSocketServer {
                     try {
                         session.getBasicRemote().sendText(message);
                         successCount++;
-                        System.out.println("成功发送到会话: " + session.getId());
+                        // System.out.println("成功发送到会话: " + session.getId());
                     } catch (IOException e) {
                         failCount++;
-                        System.out.println("发送失败到会话: " + session.getId() + ", 错误: " + e.getMessage());
-                        e.printStackTrace();
+                        // System.out.println("发送失败到会话: " + session.getId() + ", 错误: " + e.getMessage());
+                        // e.printStackTrace();
                     }
                 } else {
-                    System.out.println("跳过关闭的会话: " + session.getId());
+                    // System.out.println("跳过关闭的会话: " + session.getId());
                 }
             }
             
-            System.out.println("=== WebSocket广播完成 ===");
-            System.out.println("成功发送: " + successCount + " 个客户端");
-            System.out.println("发送失败: " + failCount + " 个客户端");
-            System.out.println("总连接数: " + sessions.size());
+            // System.out.println("=== WebSocket广播完成 ===");
+            // System.out.println("成功发送: " + successCount + " 个客户端");
+            // System.out.println("发送失败: " + failCount + " 个客户端");
+            // System.out.println("总连接数: " + sessions.size());
             
         } catch (Exception e) {
-            System.err.println("=== WebSocket广播异常 ===");
-            System.err.println("错误信息: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("=== WebSocket广播异常 ===");
+            // System.err.println("错误信息: " + e.getMessage());
+            // e.printStackTrace();
         }
     }
 

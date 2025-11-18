@@ -28,7 +28,7 @@ public class WebSocketConfig {
     @PostConstruct
     public void initPrescriptionExecutionWebSocketServer() {
         PrescriptionExecutionWebSocketServer.setApplicationContext(applicationContext);
-        System.out.println("=== 处方执行WebSocket服务器ApplicationContext初始化完成 ===");
+        // System.out.println("=== 处方执行WebSocket服务器ApplicationContext初始化完成 ===");
     }
     
     /**
@@ -37,6 +37,6 @@ public class WebSocketConfig {
     @PostConstruct
     public void initTreatmentRecordWebSocketServer() {
         TreatmentRecordWebSocketServer.setApplicationContext(applicationContext);
-        System.out.println("=== 治疗记录WebSocket服务器ApplicationContext初始化完成 ===");
+        // System.out.println("=== 治疗记录WebSocket服务器ApplicationContext初始化完成 ===");
     }
 } 

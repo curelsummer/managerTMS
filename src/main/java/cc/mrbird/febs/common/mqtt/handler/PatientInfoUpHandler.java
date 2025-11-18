@@ -3,6 +3,8 @@ package cc.mrbird.febs.common.mqtt.handler;
 import cc.mrbird.febs.common.mqtt.MsgDedupService;
 import cc.mrbird.febs.common.mqtt.MqttClientService;
 import cc.mrbird.febs.common.mqtt.MqttTopics;
+import cc.mrbird.febs.system.domain.Patient;
+import cc.mrbird.febs.system.service.PatientService;
 import cc.mrbird.febs.system.service.PrescriptionService;
 import cc.mrbird.febs.system.service.ThresholdService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,6 +24,7 @@ public class PatientInfoUpHandler {
 
     private final ObjectMapper objectMapper;
     private final MsgDedupService msgDedupService;
+    private final PatientService patientService;
     private final ThresholdService thresholdService;
     private final PrescriptionService prescriptionService;
     private final MqttClientService mqttClientService;
@@ -52,9 +55,28 @@ public class PatientInfoUpHandler {
             mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "missing_patient_id");
             return;
         }
+        
+        // 先检查患者是否存在
+        Long pid;
+        try {
+            pid = Long.valueOf(patientId);
+        } catch (NumberFormatException e) {
+            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "invalid_patient_id");
+            return;
+        }
+        
+        Patient patient = patientService.getById(pid);
+        if (patient == null) {
+            // 患者不存在
+            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "patient_not_found");
+            return;
+        }
+        
+        // 患者存在，检查是否有阈值
         boolean hasThreshold = thresholdService.existsPatientThreshold(patientId);
         if (!hasThreshold) {
-            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "no_patient_or_threshold");
+            // 患者存在但没有阈值
+            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "no_threshold");
             return;
         }
         Map<String, Object> prescription = prescriptionService.getByPatient(patientId);

@@ -56,7 +56,7 @@ public class MqttAuditLogger {
         node.put("msgType", msgType);
         if (msgId != null) node.put("msgId", msgId);
         node.put("size", size);
-        if (payload != null) node.put("payload", payload);
+        if (payload != null) node.put("messageBody", payload);
         node.put("unknown", true);
         MDC.put("direction", "inbound");
         AUDIT_LOGGER.info(compact(node));
@@ -84,7 +84,7 @@ public class MqttAuditLogger {
         node.put("msgType", msgType);
         if (msgId != null) node.put("msgId", msgId);
         node.put("size", size);
-        if (payload != null) node.put("payload", payload);
+        if (payload != null) node.put("messageBody", payload);
         if (result != null) node.put("result", result);
         if (error != null) node.put("error", error);
 

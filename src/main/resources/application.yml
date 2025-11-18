@@ -13,7 +13,7 @@ minio:
 mqtt-device:
   url: tcp://119.45.18.51:1883
   clientId: mqttx_123
-  topics: device/+/status,device/+/heartbeat,+/+/patient-info-up,+/+/threshold-result-up
+  topics: +/+/patient-info-up,+/+/threshold-result-up
   username: test
   password: test
   timeout: 10

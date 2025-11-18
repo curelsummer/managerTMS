@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,14 +48,16 @@ public class MqttClientService {
     private Map<String, Object> envelope(Map<String, Object> data) {
         Map<String, Object> wrapper = new HashMap<>();
         wrapper.put("msgId", UUID.randomUUID().toString());
-        wrapper.put("ts", System.currentTimeMillis());
+        wrapper.put("ts", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         wrapper.put("ver", "1.0");
         wrapper.put("data", data == null ? new HashMap<>() : data);
         return wrapper;
     }
 
     private void publish(String topic, Object payload, int qos, boolean retained) {
-        Message<?> msg = MessageBuilder.withPayload(payload)
+        // 将 payload 转换为 JSON 字符串，因为 MQTT 消息处理器只支持 byte[] 或 String
+        String jsonPayload = toJsonString(payload);
+        Message<?> msg = MessageBuilder.withPayload(jsonPayload)
             .setHeader(MqttHeaders.TOPIC, topic)
             .setHeader(MqttHeaders.QOS, qos)
             .setHeader(MqttHeaders.RETAINED, retained)
@@ -61,13 +65,13 @@ public class MqttClientService {
         try {
             if (outboundChannel != null) {
                 outboundChannel.send(msg);
-                mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "ok", null);
+                mqttAuditLogger.logOutbound(topic, qos, retained, jsonPayload, "ok", null);
             } else {
-                mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "skip", "tmsMqttOutboundChannel is not configured");
+                mqttAuditLogger.logOutbound(topic, qos, retained, jsonPayload, "skip", "tmsMqttOutboundChannel is not configured");
                 log.warn("MQTT 下发已跳过：未配置 mqtt-tms.url，topic={}", topic);
             }
         } catch (Exception e) {
-            mqttAuditLogger.logOutbound(topic, qos, retained, toJsonString(payload), "fail", e.getMessage());
+            mqttAuditLogger.logOutbound(topic, qos, retained, jsonPayload, "fail", e.getMessage());
             throw e;
         }
     }
