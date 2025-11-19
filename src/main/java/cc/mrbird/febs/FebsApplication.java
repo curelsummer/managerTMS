@@ -11,7 +11,7 @@ import org.mybatis.spring.annotation.MapperScan;
 @EnableTransactionManagement
 @EnableScheduling
 @EnableAsync
-@MapperScan({"cc.mrbird.febs.system.dao"})
+@MapperScan({"cc.mrbird.febs.system.dao", "cc.mrbird.febs.cos.dao"})
 public class FebsApplication {
 
     public static void main(String[] args) {

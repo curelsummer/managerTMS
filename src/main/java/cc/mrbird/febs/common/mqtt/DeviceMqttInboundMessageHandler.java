@@ -1,6 +1,7 @@
 package cc.mrbird.febs.common.mqtt;
 
 import cc.mrbird.febs.common.mqtt.handler.PatientInfoUpHandler;
+import cc.mrbird.febs.common.mqtt.handler.DeviceInfoUpHandler;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class DeviceMqttInboundMessageHandler implements MessageHandler {
 
     private final PatientInfoUpHandler patientInfoUpHandler;
     private final cc.mrbird.febs.common.mqtt.handler.ThresholdResultUpHandler thresholdResultUpHandler;
+    private final DeviceInfoUpHandler deviceInfoUpHandler;
     private final MqttAuditLogger mqttAuditLogger;
 
     @Override
@@ -48,6 +50,9 @@ public class DeviceMqttInboundMessageHandler implements MessageHandler {
                 break;
             case "threshold-result-up":
                 thresholdResultUpHandler.handle(topic, payload);
+                break;
+            case "device-info-up":
+                deviceInfoUpHandler.handle(topic, payload);
                 break;
             default:
                 // 未识别类型：写入 unknown 审计日志

@@ -13,7 +13,7 @@ minio:
 mqtt-device:
   url: tcp://119.45.18.51:1883
   clientId: mqttx_123
-  topics: +/+/patient-info-up,+/+/threshold-result-up
+  topics: +/+/patient-info-up,+/+/threshold-result-up,+/+/device-info-up
   username: test
   password: test
   timeout: 10
@@ -150,3 +150,14 @@ febs:
   # 邮件功能总开关（false 时跳过发送）
   mail:
     enabled: false
+
+# 设备指标数据配置
+device-metrics:
+  batch:
+    size: 500  # 批量处理大小
+    interval: 1000  # 处理间隔（毫秒）
+  queue:
+    key: mqtt:queue:device-metrics  # Redis队列Key
+    max-length: 100000  # 队列最大长度（告警阈值）
+  dedup:
+    ttl: 600  # 去重TTL（秒）
