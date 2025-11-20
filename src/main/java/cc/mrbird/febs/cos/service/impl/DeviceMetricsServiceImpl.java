@@ -34,3 +34,4 @@ public class DeviceMetricsServiceImpl extends ServiceImpl<DeviceMetricsMapper, D
     }
 }
 
+

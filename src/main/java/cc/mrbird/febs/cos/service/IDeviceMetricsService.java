@@ -21,3 +21,4 @@ public interface IDeviceMetricsService extends IService<DeviceMetrics> {
     boolean batchInsert(List<DeviceMetrics> metricsList);
 }
 
+

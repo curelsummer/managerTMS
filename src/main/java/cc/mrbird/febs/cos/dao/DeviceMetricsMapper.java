@@ -12,3 +12,4 @@ public interface DeviceMetricsMapper extends BaseMapper<DeviceMetrics> {
 
 }
 
+
