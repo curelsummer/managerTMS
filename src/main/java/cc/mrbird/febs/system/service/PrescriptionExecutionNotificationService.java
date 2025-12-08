@@ -63,8 +63,9 @@ public class PrescriptionExecutionNotificationService {
     
     /**
      * 构建通知数据
+     * 注意：此方法需要 public，供 WebSocketServer 调用
      */
-    private PrescriptionExecutionNotification buildNotification(PrescriptionExecution execution) {
+    public PrescriptionExecutionNotification buildNotification(PrescriptionExecution execution) {
         System.out.println("=== 开始构建通知数据 ===");
         
         PrescriptionExecutionNotification notification = new PrescriptionExecutionNotification();

@@ -105,6 +105,15 @@ public class PrescriptionDeviceServiceImpl implements PrescriptionDeviceService 
             // 缓存发送状态
             prescriptionStatusCache.put(request.getPrescriptionId(), response);
             
+            // 7. 增加使用次数
+            try {
+                prescriptionService.incrementUsageCount(request.getPrescriptionId());
+                log.info("处方使用次数已增加，处方ID: {}", request.getPrescriptionId());
+            } catch (Exception e) {
+                log.warn("增加处方使用次数失败，处方ID: {}, 错误: {}", request.getPrescriptionId(), e.getMessage());
+                // 不影响主流程，仅记录日志
+            }
+            
             log.info("处方发送成功，消息ID: {}, 主题: {}", messageId, topic);
             return response;
             

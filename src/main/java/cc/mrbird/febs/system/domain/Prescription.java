@@ -50,6 +50,7 @@ public class Prescription implements Serializable {
     
     // 其他参数
     private Integer periods;
+    private Integer usageCount; // 使用次数（主动下发计数）
     
     // 审计字段
     private Long createdBy;

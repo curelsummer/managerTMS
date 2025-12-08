@@ -33,8 +33,12 @@ public class PrescriptionExecutionStatusService {
             }
 
             // 更新状态
-            execution.setStatus(parseStatus(status));
+            Integer newStatus = parseStatus(status);
+            execution.setStatus(newStatus);
             execution.setUpdatedAt(new Date());
+            
+            // 根据状态同步更新进度描述
+            execution.setProgress(getProgressDescription(newStatus));
             
             // 可以添加额外的字段来存储客户端信息
             // 如果有扩展字段，可以在这里设置
@@ -48,6 +52,7 @@ public class PrescriptionExecutionStatusService {
                 System.out.println("=== 处方执行记录状态更新成功 ===");
                 System.out.println("执行记录ID: " + executionId);
                 System.out.println("更新后状态: " + execution.getStatus());
+                System.out.println("更新后进度: " + execution.getProgress());
             } else {
                 System.err.println("=== 处方执行记录状态更新失败 ===");
             }
@@ -82,12 +87,20 @@ public class PrescriptionExecutionStatusService {
             }
 
             // 更新状态
-            execution.setStatus(parseStatus(status));
+            Integer newStatus = parseStatus(status);
+            execution.setStatus(newStatus);
             execution.setUpdatedAt(updateTime);
             
-            // 更新进度（如果有progress字段）
-            if (progress != null) {
-                execution.setProgress(progress.toString());
+            // 更新进度描述
+            // 优先使用消息内容，如果没有消息则使用状态对应的默认描述
+            if (message != null && !message.trim().isEmpty()) {
+                execution.setProgress(message);
+            } else if (progress != null) {
+                // 如果有进度百分比，结合状态描述
+                execution.setProgress(getProgressDescription(newStatus) + " (" + progress + "%)");
+            } else {
+                // 否则使用默认状态描述
+                execution.setProgress(getProgressDescription(newStatus));
             }
             
             // 可以添加额外的字段来存储设备ID和消息
@@ -146,6 +159,31 @@ public class PrescriptionExecutionStatusService {
         } catch (Exception e) {
             System.err.println("状态解析失败: " + status);
             return 1; // 默认已下发
+        }
+    }
+    
+    /**
+     * 根据状态码获取对应的进度描述
+     * 状态定义：0-待下发/1-已下发/2-执行中/3-完成/4-异常
+     */
+    private String getProgressDescription(Integer status) {
+        if (status == null) {
+            return "待下发";
+        }
+        
+        switch (status) {
+            case 0:
+                return "等待下发";
+            case 1:
+                return "已下发到设备";
+            case 2:
+                return "正在执行";
+            case 3:
+                return "执行完成";
+            case 4:
+                return "执行异常";
+            default:
+                return "未知状态";
         }
     }
 } 

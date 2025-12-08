@@ -20,7 +20,7 @@ public class PrescriptionExecution implements Serializable {
     private Long deviceId;
     private Long prescriptionId;
     private Long executorId;
-    private Integer status; // 0-草稿/1-已下发/2-执行中/3-完成/4-异常
+    private Integer status; // 0-待下发/1-已下发/2-执行中/3-完成/4-异常
     private String progress;
     private String exception;
     

@@ -1,7 +1,6 @@
 package cc.mrbird.febs.system.controller;
 
 import cc.mrbird.febs.common.domain.FebsResponse;
-import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.system.domain.PrescriptionExecution;
@@ -74,7 +73,32 @@ public class PrescriptionExecutionController {
     @PostMapping
     public FebsResponse add(@RequestHeader("Authentication") String token, @RequestBody PrescriptionExecution execution) {
         try {
-            // 设置创建时间和创建人
+            // ========== 1. 验证必填字段 ==========
+            if (execution.getDeviceId() == null) {
+                return new FebsResponse().put("success", false).message("设备ID不能为空");
+            }
+            if (execution.getPatientId() == null) {
+                return new FebsResponse().put("success", false).message("患者ID不能为空");
+            }
+            if (execution.getPrescriptionId() == null) {
+                return new FebsResponse().put("success", false).message("处方ID不能为空");
+            }
+            
+            // ========== 2. 验证设备有效性 ==========
+            Device device = deviceService.getById(execution.getDeviceId());
+            if (device == null) {
+                return new FebsResponse()
+                    .put("success", false)
+                    .message("设备不存在，设备ID: " + execution.getDeviceId());
+            }
+            
+            if (device.getDeviceNo() == null) {
+                return new FebsResponse()
+                    .put("success", false)
+                    .message("设备编号未设置，无法下发到上位机");
+            }
+            
+            // ========== 3. 设置审计字段 ==========
             String realToken = FebsUtil.decryptToken(token);
             Long userId = JWTUtil.getUserId(realToken);
             
@@ -86,7 +110,7 @@ public class PrescriptionExecutionController {
             // 设置执行人ID为当前登录用户
             execution.setExecutorId(userId);
             
-            // 设置医院ID - 从当前用户的科室信息获取
+            // ========== 4. 设置医院ID ==========
             if (execution.getHospitalId() == null) {
                 User user = userService.getById(userId);
                 if (user != null && user.getDeptId() != null) {
@@ -97,47 +121,51 @@ public class PrescriptionExecutionController {
                 }
             }
             
-            // 设置默认值
-            if (execution.getStatus() == null) {
-                execution.setStatus(0); // 默认草稿状态
-            }
+            // ========== 5. 强制设置初始状态为待下发 ==========
+            execution.setStatus(0); // 0-待下发，等待上位机确认
+            execution.setProgress("等待下发"); // 设置初始进度描述
             
+            // ========== 6. 保存记录 ==========
             boolean success = prescriptionExecutionService.save(execution);
             
-            if (success) {
-                System.out.println("=== 处方执行记录保存成功，准备发送WebSocket通知 ===");
-                System.out.println("执行记录ID: " + execution.getId());
-                System.out.println("患者ID: " + execution.getPatientId());
-                System.out.println("处方ID: " + execution.getPrescriptionId());
-                System.out.println("设备ID: " + execution.getDeviceId());
-                System.out.println("执行人ID: " + execution.getExecutorId());
-                System.out.println("医院ID: " + execution.getHospitalId());
-                
-                // 查询并输出设备编号
-                if (execution.getDeviceId() != null) {
-                    try {
-                        cc.mrbird.febs.system.domain.Device device = deviceService.getById(execution.getDeviceId());
-                        if (device != null && device.getDeviceNo() != null) {
-                            System.out.println("设备编号: " + device.getDeviceNo());
-                        } else {
-                            System.out.println("设备编号: 未设置");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("查询设备编号失败: " + e.getMessage());
-                    }
-                }
-                
-                // 发送WebSocket通知
-                notificationService.notifyPrescriptionExecutionCreated(execution);
-                
-                System.out.println("=== WebSocket通知发送完成 ===");
-                return new FebsResponse().put("success", true).message("处方执行记录创建成功");
-            } else {
-                System.out.println("=== 处方执行记录保存失败，不发送WebSocket通知 ===");
-                return new FebsResponse().put("success", false).message("处方执行记录创建失败");
+            if (!success) {
+                return new FebsResponse().put("success", false).message("保存执行记录失败");
             }
+            
+            System.out.println("=== 处方执行记录创建成功 ===");
+            System.out.println("执行记录ID: " + execution.getId());
+            System.out.println("患者ID: " + execution.getPatientId());
+            System.out.println("处方ID: " + execution.getPrescriptionId());
+            System.out.println("设备ID: " + execution.getDeviceId());
+            System.out.println("设备编号: " + device.getDeviceNo());
+            System.out.println("状态: 0 (待下发)");
+            System.out.println("执行人ID: " + execution.getExecutorId());
+            System.out.println("医院ID: " + execution.getHospitalId());
+            
+            // ========== 7. 广播给在线上位机（不抛出异常） ==========
+            try {
+                notificationService.notifyPrescriptionExecutionCreated(execution);
+                System.out.println("WebSocket广播成功");
+            } catch (Exception e) {
+                System.err.println("WebSocket广播失败（不影响业务）: " + e.getMessage());
+                e.printStackTrace();
+                // 记录保持 status=0，上位机重连时会收到
+            }
+            
+            // ========== 8. 返回成功响应 ==========
+            return new FebsResponse()
+                .put("success", true)
+                .put("executionId", execution.getId())
+                .put("deviceNo", device.getDeviceNo())
+                .put("deviceId", device.getDeviceId())
+                .message("处方执行记录创建成功，等待上位机确认");
+                
         } catch (Exception e) {
-            return new FebsResponse().put("success", false).message("系统错误：" + e.getMessage());
+            System.err.println("创建处方执行记录异常: " + e.getMessage());
+            e.printStackTrace();
+            return new FebsResponse()
+                .put("success", false)
+                .message("系统错误：" + e.getMessage());
         }
     }
 

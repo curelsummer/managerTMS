@@ -147,4 +147,28 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
         dto.put("parameters", parameters);
         return dto;
     }
+    
+    @Override
+    public boolean incrementUsageCount(Long prescriptionId) {
+        if (prescriptionId == null) {
+            return false;
+        }
+        try {
+            // 使用数据库原子操作增加使用次数
+            Prescription prescription = this.baseMapper.selectById(prescriptionId);
+            if (prescription == null) {
+                return false;
+            }
+            
+            // 构建更新对象
+            Prescription update = new Prescription();
+            update.setId(prescriptionId);
+            update.setUsageCount(prescription.getUsageCount() == null ? 1 : prescription.getUsageCount() + 1);
+            
+            return this.updateById(update);
+        } catch (Exception e) {
+            // 记录异常但不影响主流程
+            return false;
+        }
+    }
 } 
