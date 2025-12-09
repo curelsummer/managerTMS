@@ -68,15 +68,12 @@ public class PrescriptionExecutionController {
     }
 
     /**
-     * 新增处方执行记录
+     * 新增处方执行记录（支持广播模式，设备ID可选）
      */
     @PostMapping
     public FebsResponse add(@RequestHeader("Authentication") String token, @RequestBody PrescriptionExecution execution) {
         try {
             // ========== 1. 验证必填字段 ==========
-            if (execution.getDeviceId() == null) {
-                return new FebsResponse().put("success", false).message("设备ID不能为空");
-            }
             if (execution.getPatientId() == null) {
                 return new FebsResponse().put("success", false).message("患者ID不能为空");
             }
@@ -84,18 +81,21 @@ public class PrescriptionExecutionController {
                 return new FebsResponse().put("success", false).message("处方ID不能为空");
             }
             
-            // ========== 2. 验证设备有效性 ==========
-            Device device = deviceService.getById(execution.getDeviceId());
-            if (device == null) {
-                return new FebsResponse()
-                    .put("success", false)
-                    .message("设备不存在，设备ID: " + execution.getDeviceId());
-            }
-            
-            if (device.getDeviceNo() == null) {
-                return new FebsResponse()
-                    .put("success", false)
-                    .message("设备编号未设置，无法下发到上位机");
+            // ========== 2. 验证设备有效性（设备ID变为可选）==========
+            Device device = null;
+            if (execution.getDeviceId() != null) {
+                device = deviceService.getById(execution.getDeviceId());
+                if (device == null) {
+                    return new FebsResponse()
+                        .put("success", false)
+                        .message("设备不存在，设备ID: " + execution.getDeviceId());
+                }
+                
+                if (device.getDeviceNo() == null) {
+                    return new FebsResponse()
+                        .put("success", false)
+                        .message("设备编号未设置，无法下发到上位机");
+                }
             }
             
             // ========== 3. 设置审计字段 ==========
@@ -121,9 +121,10 @@ public class PrescriptionExecutionController {
                 }
             }
             
-            // ========== 5. 强制设置初始状态为待下发 ==========
-            execution.setStatus(0); // 0-待下发，等待上位机确认
-            execution.setProgress("等待下发"); // 设置初始进度描述
+            // ========== 5. 强制设置初始状态为待领取 ==========
+            execution.setStatus(0); // 0-待领取(PENDING)，等待设备认领
+            execution.setProgress("等待设备领取"); // 设置初始进度描述
+            execution.setBroadcastTime(new Date()); // 设置广播时间
             
             // ========== 6. 保存记录 ==========
             boolean success = prescriptionExecutionService.save(execution);
@@ -132,33 +133,37 @@ public class PrescriptionExecutionController {
                 return new FebsResponse().put("success", false).message("保存执行记录失败");
             }
             
-            System.out.println("=== 处方执行记录创建成功 ===");
+            System.out.println("=== 处方执行记录创建成功（广播模式）===");
             System.out.println("执行记录ID: " + execution.getId());
             System.out.println("患者ID: " + execution.getPatientId());
             System.out.println("处方ID: " + execution.getPrescriptionId());
-            System.out.println("设备ID: " + execution.getDeviceId());
-            System.out.println("设备编号: " + device.getDeviceNo());
-            System.out.println("状态: 0 (待下发)");
+            System.out.println("设备ID: " + (execution.getDeviceId() != null ? execution.getDeviceId() : "未指定（广播模式）"));
+            System.out.println("状态: 0 (待领取-PENDING)");
             System.out.println("执行人ID: " + execution.getExecutorId());
             System.out.println("医院ID: " + execution.getHospitalId());
             
-            // ========== 7. 广播给在线上位机（不抛出异常） ==========
+            // ========== 7. 广播给所有在线设备（不抛出异常） ==========
             try {
                 notificationService.notifyPrescriptionExecutionCreated(execution);
-                System.out.println("WebSocket广播成功");
+                System.out.println("WebSocket广播成功 - 所有设备都将收到该处方");
             } catch (Exception e) {
                 System.err.println("WebSocket广播失败（不影响业务）: " + e.getMessage());
                 e.printStackTrace();
-                // 记录保持 status=0，上位机重连时会收到
+                // 记录保持 status=0，设备重连时会收到
             }
             
             // ========== 8. 返回成功响应 ==========
-            return new FebsResponse()
+            FebsResponse response = new FebsResponse()
                 .put("success", true)
                 .put("executionId", execution.getId())
-                .put("deviceNo", device.getDeviceNo())
-                .put("deviceId", device.getDeviceId())
-                .message("处方执行记录创建成功，等待上位机确认");
+                .message("处方执行记录创建成功，已广播到所有设备，等待设备领取");
+                
+            if (device != null) {
+                response.put("deviceNo", device.getDeviceNo());
+                response.put("deviceId", device.getDeviceId());
+            }
+            
+            return response;
                 
         } catch (Exception e) {
             System.err.println("创建处方执行记录异常: " + e.getMessage());

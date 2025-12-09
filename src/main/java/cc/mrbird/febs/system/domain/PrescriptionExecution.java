@@ -20,9 +20,16 @@ public class PrescriptionExecution implements Serializable {
     private Long deviceId;
     private Long prescriptionId;
     private Long executorId;
-    private Integer status; // 0-待下发/1-已下发/2-执行中/3-完成/4-异常
+    
+    // 状态定义：0-待领取(PENDING) / 1-已领取/待执行(CLAIMED) / 2-执行中(IN_PROGRESS) / 3-完成(COMPLETED) / 4-异常(ERROR)
+    private Integer status;
     private String progress;
     private String exception;
+    
+    // ========== 新增：认领相关字段 ==========
+    private Integer claimedDeviceNo;  // 领取设备编号
+    private Date claimedTime;         // 领取时间
+    private Date broadcastTime;       // 广播时间
     
     // 审计字段
     private Long createdBy;

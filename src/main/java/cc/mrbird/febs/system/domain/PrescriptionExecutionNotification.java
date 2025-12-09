@@ -15,8 +15,10 @@ public class PrescriptionExecutionNotification implements Serializable {
     
     /**
      * 消息类型
+     * PRESCRIPTION_BROADCAST - 广播新处方（待领取）
+     * PRESCRIPTION_EXECUTION_CREATED - 旧版消息类型（兼容）
      */
-    private String messageType = "PRESCRIPTION_EXECUTION_CREATED";
+    private String messageType = "PRESCRIPTION_BROADCAST";
     
     /**
      * 时间戳

@@ -69,11 +69,21 @@ public class PrescriptionExecutionNotificationService {
         System.out.println("=== 开始构建通知数据 ===");
         
         PrescriptionExecutionNotification notification = new PrescriptionExecutionNotification();
+        
+        // 根据状态设置消息类型
+        if (execution.getStatus() == 0) {
+            // 状态为0（待领取），使用广播消息类型
+            notification.setMessageType("PRESCRIPTION_BROADCAST");
+        } else {
+            // 其他状态，使用传统消息类型（兼容）
+            notification.setMessageType("PRESCRIPTION_EXECUTION_CREATED");
+        }
+        
         notification.setTimestamp(new java.util.Date());
         notification.setExecutionId(execution.getId());
         notification.setExecutionStatus(execution.getStatus());
         
-        System.out.println("基础信息设置完成 - 执行ID: " + execution.getId() + ", 状态: " + execution.getStatus());
+        System.out.println("基础信息设置完成 - 执行ID: " + execution.getId() + ", 状态: " + execution.getStatus() + ", 消息类型: " + notification.getMessageType());
         
         // 获取处方信息
         if (execution.getPrescriptionId() != null) {
@@ -132,7 +142,7 @@ public class PrescriptionExecutionNotificationService {
             System.out.println("患者ID为空，跳过患者信息查询");
         }
         
-        // 获取设备信息
+        // 获取设备信息（广播模式下deviceId可能为null）
         if (execution.getDeviceId() != null) {
             System.out.println("正在查询设备信息，设备ID: " + execution.getDeviceId());
             cc.mrbird.febs.system.domain.Device device = deviceService.getById(execution.getDeviceId());
@@ -152,7 +162,7 @@ public class PrescriptionExecutionNotificationService {
                 System.out.println("设备信息查询失败，设备ID: " + execution.getDeviceId());
             }
         } else {
-            System.out.println("设备ID为空，跳过设备信息查询");
+            System.out.println("设备ID为空（广播模式），跳过设备信息查询");
         }
         
         // 获取执行人信息
