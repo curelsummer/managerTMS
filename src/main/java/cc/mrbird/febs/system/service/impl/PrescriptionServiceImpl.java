@@ -134,8 +134,19 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
             return null;
         }
         Map<String, Object> dto = new HashMap<>();
+        
+        // 基础信息
         dto.put("prescriptionId", p.getId());
         dto.put("patientId", p.getPatientId());
+        dto.put("hospitalId", p.getHospitalId());
+        dto.put("doctorId", p.getDoctorId());
+        dto.put("presType", p.getPresType());  // 处方类型：1=标准TMS, 2=TBS
+        
+        // 部位信息
+        dto.put("presPartName", p.getPresPartName());
+        dto.put("standardPresName", p.getStandardPresName());
+        
+        // 治疗参数
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("presStrength", p.getPresStrength());
         parameters.put("presFreq", p.getPresFreq());
@@ -144,6 +155,15 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
         parameters.put("repeatCount", p.getRepeatCount());
         parameters.put("totalCount", p.getTotalCount());
         parameters.put("totalTime", p.getTotalTime());
+        
+        // TBS专用参数（如果是TBS处方）
+        if (p.getTbsType() != null) {
+            parameters.put("tbsType", p.getTbsType());
+            parameters.put("innerCount", p.getInnerCount());
+            parameters.put("interFreq", p.getInterFreq());
+            parameters.put("interCount", p.getInterCount());
+        }
+        
         dto.put("parameters", parameters);
         return dto;
     }
