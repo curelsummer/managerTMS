@@ -1,6 +1,7 @@
 package cc.mrbird.febs.system.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -68,6 +69,53 @@ public class TreatmentRecord implements Serializable {
      * 患者年龄
      */
     private String patientAgeStr;
+    
+    /**
+     * 患者唯一标识（姓名_出生日期）
+     */
+    private String patientIdentifier;
+    
+    /**
+     * 服务器生成的记录ID（如：TR-20241211-150000-001-289）
+     * 注意：此字段在数据库表中不存在，仅用于业务逻辑
+     */
+    @TableField(exist = false)
+    private String serverRecordId;
+    
+    /**
+     * 设备本地病历ID
+     * 注意：如果表中不存在此字段，请添加 @TableField(exist = false)
+     */
+    @TableField(exist = false)
+    private Long localMedicalRecordId;
+    
+    /**
+     * 来源设备编号（用于同步过滤）
+     * 注意：如果表中不存在此字段，请添加 @TableField(exist = false)
+     */
+    @TableField(exist = false)
+    private Integer sourceDeviceNo;
+    
+    /**
+     * 患者出生日期（格式：yyyy-MM-dd）
+     * 注意：如果数据库表中不存在此字段，请添加 @TableField(exist = false)
+     */
+    @TableField(exist = false)
+    private String patientBirthday;
+    
+    /**
+     * 患者身高（cm）
+     * 注意：数据库表中不存在此字段，仅用于业务逻辑
+     */
+    @TableField(exist = false)
+    private Integer patientHeight;
+    
+    /**
+     * 患者体重（kg）
+     * 注意：数据库表中不存在此字段，仅用于业务逻辑
+     */
+    @TableField(exist = false)
+    private Integer patientWeight;
     
     /**
      * 患者病房

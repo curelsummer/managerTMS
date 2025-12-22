@@ -4,30 +4,20 @@
 
     <!-- 根据消息ID查询治疗记录 -->
     <select id="selectByMessageId" resultType="cc.mrbird.febs.system.domain.TreatmentRecord">
-        SELECT 
-            id,
-            message_id,
-            timestamp,
-            device_id,
-            device_no,
-            medical_record_id,
-            patient_id,
-            patient_name,
-            patient_sex,
-            patient_age_str,
-            patient_room,
-            patient_no,
-            patient_bed,
-            pres_date,
-            pres_time,
-            doctor_name,
-            mep_value,
-            medical_record_remark,
-            message_type,
-            create_time,
-            update_time
-        FROM treatment_record 
-        WHERE message_id = #{messageId}
+        SELECT * FROM treatment_record WHERE message_id = #{messageId}
+    </select>
+    
+    <!-- 根据服务器记录ID查询治疗记录 -->
+    <!-- 注意：由于表中没有server_record_id字段，使用message_id字段查询（serverRecordId被用作messageId） -->
+    <select id="selectByServerRecordId" resultType="cc.mrbird.febs.system.domain.TreatmentRecord">
+        SELECT * FROM treatment_record WHERE message_id = #{serverRecordId}
+    </select>
+    
+    <!-- 根据患者唯一标识查询治疗记录列表 -->
+    <select id="selectByPatientIdentifier" resultType="cc.mrbird.febs.system.domain.TreatmentRecord">
+        SELECT * FROM treatment_record 
+        WHERE patient_identifier = #{patientIdentifier}
+        ORDER BY pres_date DESC, pres_time DESC
     </select>
 
     <!-- 分页查询治疗记录 -->

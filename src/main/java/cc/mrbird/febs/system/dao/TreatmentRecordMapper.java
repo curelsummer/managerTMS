@@ -22,6 +22,16 @@ public interface TreatmentRecordMapper extends BaseMapper<TreatmentRecord> {
     TreatmentRecord selectByMessageId(@Param("messageId") String messageId);
     
     /**
+     * 根据服务器记录ID查询治疗记录
+     */
+    TreatmentRecord selectByServerRecordId(@Param("serverRecordId") String serverRecordId);
+    
+    /**
+     * 根据患者唯一标识查询治疗记录列表
+     */
+    List<TreatmentRecord> selectByPatientIdentifier(@Param("patientIdentifier") String patientIdentifier);
+    
+    /**
      * 分页查询治疗记录
      */
     IPage<TreatmentRecordVO> selectTreatmentRecordPage(Page<TreatmentRecordVO> page, @Param("query") Object query);

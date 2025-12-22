@@ -775,9 +775,9 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     private void pushStatus(Long deviceId, String status) {
         try {
-            System.out.println("=== 开始推送状态消息 ===");
-            System.out.println("设备ID: " + deviceId);
-            System.out.println("状态: " + status);
+            // System.out.println("=== 开始推送状态消息 ===");
+            // System.out.println("设备ID: " + deviceId);
+            // System.out.println("状态: " + status);
             // System.out.println("时间: " + new Date());
             
             // 添加小延迟，避免快速连续推送导致的状态冲突
@@ -801,10 +801,10 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                 // System.out.println("设备信息查询成功");
                 // System.out.println("设备编号: " + device.getDeviceNo());
                 // System.out.println("治疗状态: " + treatmentStatus);
-                System.out.println("推送状态消息包含设备ID: " + deviceId + ", 状态: " + status + ", 治疗状态: " + treatmentStatus);
+                // System.out.println("推送状态消息包含设备ID: " + deviceId + ", 状态: " + status + ", 治疗状态: " + treatmentStatus);
             } else {
                 msg.put("treatmentStatus", 0);
-                System.out.println("未找到设备信息，设置默认治疗状态为0");
+                // System.out.println("未找到设备信息，设置默认治疗状态为0");
             }
             
             // 序列化消息
@@ -816,9 +816,9 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             // System.out.println("开始广播消息...");
             DeviceWebSocketServer.broadcast(json);
             // System.out.println("消息广播成功");
-            System.out.println("推送状态消息: " + json);
+            // System.out.println("推送状态消息: " + json);
             
-            System.out.println("=== 状态消息推送完成 ===");
+            // System.out.println("=== 状态消息推送完成 ===");
             
         } catch (Exception e) {
             System.err.println("推送状态消息异常: " + e.getMessage());

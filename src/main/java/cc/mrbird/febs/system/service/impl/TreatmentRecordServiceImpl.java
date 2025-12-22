@@ -18,6 +18,7 @@ import cc.mrbird.febs.system.domain.vo.MepRecordVO;
 import cc.mrbird.febs.system.domain.vo.MepDataVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -59,34 +60,61 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
         try {
             log.info("开始保存治疗记录到数据库");
             
-            // 1. 检查是否已存在相同的消息ID
-            String messageId = jsonNode.get("messageId").asText();
-            if (isMessageIdExists(messageId)) {
-                log.warn("消息ID已存在，跳过保存: {}", messageId);
+            // 1. 提取基本信息
+            Integer deviceNo = jsonNode.get("deviceNo").asInt();
+            Long localMedicalRecordId = jsonNode.get("localMedicalRecordId").asLong();
+            String patientName = jsonNode.get("patientName").asText();
+            String patientBirthday = jsonNode.has("patientBirthday") ? jsonNode.get("patientBirthday").asText() : null;
+            
+            // 2. 生成患者唯一标识
+            String patientIdentifier = cc.mrbird.febs.system.utils.ServerRecordIdGenerator.generatePatientIdentifier(patientName, patientBirthday);
+            
+            // 3. 生成服务器记录ID
+            String serverRecordId = cc.mrbird.febs.system.utils.ServerRecordIdGenerator.generateTreatmentRecordId(deviceNo, localMedicalRecordId);
+            
+            // 4. 检查是否已存在相同的服务器记录ID（防止重复上传）
+            TreatmentRecord existingRecord = treatmentRecordMapper.selectByServerRecordId(serverRecordId);
+            if (existingRecord != null) {
+                log.warn("治疗记录已存在，serverRecordId: {}", serverRecordId);
                 return true; // 已存在也算成功
             }
             
-            // 2. 保存治疗记录主表
-            TreatmentRecord treatmentRecord = buildTreatmentRecord(jsonNode);
-            treatmentRecordMapper.insert(treatmentRecord);
-            log.info("治疗记录主表保存成功，ID: {}", treatmentRecord.getId());
+            // 4.1 检查是否已存在相同 patientIdentifier + deviceNo 的治疗记录（避免重复创建）
+            // 如果已存在，复用该记录，但仍需要保存处方数据
+            LambdaQueryWrapper<TreatmentRecord> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(TreatmentRecord::getPatientIdentifier, patientIdentifier)
+                   .eq(TreatmentRecord::getDeviceNo, deviceNo)
+                   .orderByDesc(TreatmentRecord::getCreateTime)
+                   .last("LIMIT 1");
+            existingRecord = treatmentRecordMapper.selectOne(wrapper);
             
-            // 3. 保存标准处方记录
-            if (jsonNode.has("prescription_record") && jsonNode.get("prescription_record").isArray()) {
-                savePrescriptionRecords(jsonNode.get("prescription_record"), treatmentRecord.getId());
+            Long treatmentRecordId;
+            if (existingRecord != null) {
+                log.warn("治疗记录已存在（patientIdentifier相同），复用现有记录: treatmentRecordId={}, patientIdentifier={}, deviceNo={}, serverRecordId={}", 
+                        existingRecord.getId(), patientIdentifier, deviceNo, existingRecord.getMessageId());
+                treatmentRecordId = existingRecord.getId();
+            } else {
+                // 5. 保存治疗记录主表
+                TreatmentRecord treatmentRecord = buildTreatmentRecord(jsonNode, patientIdentifier, serverRecordId);
+                treatmentRecordMapper.insert(treatmentRecord);
+                log.info("治疗记录主表保存成功，ID: {}, serverRecordId: {}", treatmentRecord.getId(), serverRecordId);
+                treatmentRecordId = treatmentRecord.getId();
             }
             
-            // 4. 保存TBS处方记录
+            // 6. 保存标准处方记录（无论治疗记录是新创建还是复用，都需要保存处方数据）
+            if (jsonNode.has("prescriptions") && jsonNode.get("prescriptions").isArray()) {
+                savePrescriptionRecords(jsonNode.get("prescriptions"), treatmentRecordId);
+            } else if (jsonNode.has("prescription_record") && jsonNode.get("prescription_record").isArray()) {
+                // 兼容旧字段名
+                savePrescriptionRecords(jsonNode.get("prescription_record"), treatmentRecordId);
+            }
+            
+            // 7. 保存TBS处方记录（无论治疗记录是新创建还是复用，都需要保存处方数据）
             if (jsonNode.has("tbsPrescriptions") && jsonNode.get("tbsPrescriptions").isArray()) {
-                saveTbsPrescriptions(jsonNode.get("tbsPrescriptions"), treatmentRecord.getId());
+                saveTbsPrescriptions(jsonNode.get("tbsPrescriptions"), treatmentRecordId);
             }
             
-            // 5. 保存MEP记录
-            if (jsonNode.has("mepRecords") && jsonNode.get("mepRecords").isArray()) {
-                saveMepRecords(jsonNode.get("mepRecords"), treatmentRecord.getId());
-            }
-            
-            log.info("治疗记录保存完成，主记录ID: {}", treatmentRecord.getId());
+            log.info("治疗记录保存完成，serverRecordId: {}", serverRecordId);
             return true;
             
         } catch (Exception e) {
@@ -163,42 +191,65 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
     }
     
     /**
-     * 检查消息ID是否已存在
-     */
-    private boolean isMessageIdExists(String messageId) {
-        try {
-            TreatmentRecord existingRecord = treatmentRecordMapper.selectByMessageId(messageId);
-            return existingRecord != null;
-        } catch (Exception e) {
-            log.warn("检查消息ID是否存在时发生异常: {}", e.getMessage());
-            return false;
-        }
-    }
-    
-    /**
      * 构建治疗记录主表数据
      */
-    private TreatmentRecord buildTreatmentRecord(JsonNode jsonNode) throws Exception {
+    private TreatmentRecord buildTreatmentRecord(JsonNode jsonNode, String patientIdentifier, String serverRecordId) throws Exception {
         TreatmentRecord record = new TreatmentRecord();
         
-        record.setMessageId(jsonNode.get("messageId").asText());
-        record.setTimestamp(jsonNode.get("timestamp").asLong());
-        record.setDeviceId(jsonNode.get("deviceId").asLong());
+        // 服务器生成的字段
+        record.setPatientIdentifier(patientIdentifier);
+        record.setServerRecordId(serverRecordId);
+        
+        // 设备上报的字段
+        record.setLocalMedicalRecordId(jsonNode.get("localMedicalRecordId").asLong());
+        // 统一处理 deviceId：支持数字和字符串两种类型，如果不存在则使用 deviceNo
+        Long deviceId = 0L;
+        if (jsonNode.has("deviceId") && !jsonNode.get("deviceId").isNull()) {
+            try {
+                if (jsonNode.get("deviceId").isTextual()) {
+                    // 字符串类型：提取数字
+                    deviceId = Long.parseLong(jsonNode.get("deviceId").asText().replaceAll("[^0-9]", ""));
+                } else if (jsonNode.get("deviceId").isNumber()) {
+                    // 数字类型：直接转换
+                    deviceId = jsonNode.get("deviceId").asLong();
+                }
+            } catch (Exception e) {
+                log.warn("解析deviceId失败，使用默认值0: {}", e.getMessage());
+                deviceId = 0L;
+            }
+        } else {
+            // 如果deviceId不存在，使用deviceNo作为默认值
+            deviceId = Long.valueOf(jsonNode.get("deviceNo").asInt());
+        }
+        record.setDeviceId(deviceId);
         record.setDeviceNo(jsonNode.get("deviceNo").asInt());
-        record.setMedicalRecordId(jsonNode.get("medicalRecordId").asLong());
-        record.setPatientId(jsonNode.get("patientId").asLong());
+        record.setSourceDeviceNo(jsonNode.get("deviceNo").asInt()); // 来源设备号等于上报设备号
+        
+        // 患者信息
+        record.setPatientId(0L); // 设备端可能没有服务器的患者ID，设为0
         record.setPatientName(jsonNode.get("patientName").asText());
-        record.setPatientSex(jsonNode.get("patientSex").asText());
-        record.setPatientAgeStr(jsonNode.get("patientAgeStr").asText());
+        record.setPatientSex(getStringValue(jsonNode, "patientSex"));
+        record.setPatientAgeStr(getStringValue(jsonNode, "patientAgeStr"));
+        record.setPatientBirthday(getStringValue(jsonNode, "patientBirthday"));
+        record.setPatientHeight(getIntValue(jsonNode, "patientHeight"));
+        record.setPatientWeight(getIntValue(jsonNode, "patientWeight"));
         record.setPatientRoom(getStringValue(jsonNode, "patientRoom"));
         record.setPatientNo(getStringValue(jsonNode, "patientNo"));
         record.setPatientBed(getStringValue(jsonNode, "patientBed"));
+        
+        // 处方信息
         record.setPresDate(dateFormat.parse(jsonNode.get("presDate").asText()));
         record.setPresTime(jsonNode.get("presTime").asText());
         record.setDoctorName(getStringValue(jsonNode, "doctorName"));
         record.setMepValue(getIntValue(jsonNode, "mepValue"));
         record.setMedicalRecordRemark(getStringValue(jsonNode, "medicalRecordRemark"));
+        
+        // 其他字段
+        record.setMedicalRecordId(0L); // 设备端可能没有服务器的病历ID
+        record.setMessageId(serverRecordId); // 使用serverRecordId作为messageId
+        record.setTimestamp(jsonNode.has("timestamp") ? jsonNode.get("timestamp").asLong() : System.currentTimeMillis());
         record.setMessageType(getStringValue(jsonNode, "messageType"));
+        
         record.setCreateTime(new Date());
         record.setUpdateTime(new Date());
         
@@ -265,29 +316,6 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
         }
     }
     
-    /**
-     * 保存MEP记录
-     */
-    private void saveMepRecords(JsonNode mepArray, Long treatmentRecordId) throws Exception {
-        for (JsonNode mep : mepArray) {
-            MepRecord record = new MepRecord();
-            
-            record.setTreatmentRecordId(treatmentRecordId);
-            record.setMepRecordId(mep.get("mepRecordId").asLong());
-            record.setDType(mep.get("dType").asInt());
-            record.setInTime(dateTimeFormat.parse(mep.get("inTime").asText()));
-            record.setCreateTime(new Date());
-            record.setUpdateTime(new Date());
-            
-            mepRecordMapper.insert(record);
-            log.info("MEP记录保存成功，ID: {}", record.getId());
-            
-            // 保存MEP数据
-            if (mep.has("mepData") && mep.get("mepData").isArray()) {
-                saveMepData(mep.get("mepData"), record.getId());
-            }
-        }
-    }
     
     /**
      * 保存MEP数据

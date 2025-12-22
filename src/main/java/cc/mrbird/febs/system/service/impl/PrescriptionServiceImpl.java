@@ -155,6 +155,7 @@ public class PrescriptionServiceImpl extends ServiceImpl<PrescriptionMapper, Pre
         parameters.put("repeatCount", p.getRepeatCount());
         parameters.put("totalCount", p.getTotalCount());
         parameters.put("totalTime", p.getTotalTime());
+        parameters.put("periods", p.getPeriods());  // 周期数（所有处方都需要）
         
         // TBS专用参数（如果是TBS处方）
         if (p.getTbsType() != null) {
