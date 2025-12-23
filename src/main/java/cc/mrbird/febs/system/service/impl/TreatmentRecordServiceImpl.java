@@ -49,8 +49,12 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
     @Autowired
     private MepDataMapper mepDataMapper;
     
+    @Autowired
+    private PatientMapper patientMapper;
+    
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
@@ -93,12 +97,24 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
                 log.warn("治疗记录已存在（patientIdentifier相同），复用现有记录: treatmentRecordId={}, patientIdentifier={}, deviceNo={}, serverRecordId={}", 
                         existingRecord.getId(), patientIdentifier, deviceNo, existingRecord.getMessageId());
                 treatmentRecordId = existingRecord.getId();
+                
+                // 如果上传的治疗数据中包含MEP值，更新治疗主表和患者表
+                Integer mepValue = getIntValue(jsonNode, "mepValue");
+                if (mepValue != null) {
+                    updateTreatmentRecordMepValue(treatmentRecordId, mepValue, existingRecord.getPatientId());
+                }
             } else {
                 // 5. 保存治疗记录主表
                 TreatmentRecord treatmentRecord = buildTreatmentRecord(jsonNode, patientIdentifier, serverRecordId);
                 treatmentRecordMapper.insert(treatmentRecord);
                 log.info("治疗记录主表保存成功，ID: {}, serverRecordId: {}", treatmentRecord.getId(), serverRecordId);
                 treatmentRecordId = treatmentRecord.getId();
+                
+                // 如果上传的治疗数据中包含MEP值，更新患者表
+                Integer mepValue = treatmentRecord.getMepValue();
+                if (mepValue != null) {
+                    updatePatientMepValue(treatmentRecord.getPatientId(), mepValue);
+                }
             }
             
             // 6. 保存标准处方记录（无论治疗记录是新创建还是复用，都需要保存处方数据）
@@ -179,7 +195,10 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
         List<TbsPrescriptionVO> tbsPrescriptions = tbsPrescriptionMapper.selectByTreatmentRecordId(id);
         treatmentRecord.setTbsPrescriptions(tbsPrescriptions);
         
-        // 查询MEP记录及数据
+        // 查询MEP记录及数据（包括关联的和独立的）
+        // 注意：现在MEP记录可以独立存在，所以需要查询关联的MEP记录
+        // 如果 treatmentRecordId 为 NULL，表示独立MEP记录，不会在这里显示
+        // 如果需要显示所有相关MEP记录（包括独立的），可以通过 patientIdentifier 查询
         List<MepRecordVO> mepRecords = mepRecordMapper.selectByTreatmentRecordId(id);
         for (MepRecordVO mepRecord : mepRecords) {
             List<MepDataVO> mepDataList = mepDataMapper.selectByMepRecordId(mepRecord.getId());
@@ -226,8 +245,11 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
         record.setSourceDeviceNo(jsonNode.get("deviceNo").asInt()); // 来源设备号等于上报设备号
         
         // 患者信息
-        record.setPatientId(0L); // 设备端可能没有服务器的患者ID，设为0
-        record.setPatientName(jsonNode.get("patientName").asText());
+        String patientName = jsonNode.get("patientName").asText();
+        String patientBirthday = getStringValue(jsonNode, "patientBirthday");
+        Long patientId = findPatientIdByNameAndBirthday(patientName, patientBirthday);
+        record.setPatientId(patientId);
+        record.setPatientName(patientName);
         record.setPatientSex(getStringValue(jsonNode, "patientSex"));
         record.setPatientAgeStr(getStringValue(jsonNode, "patientAgeStr"));
         record.setPatientBirthday(getStringValue(jsonNode, "patientBirthday"));
@@ -354,5 +376,159 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
      */
     private Integer getIntValue(JsonNode node, String fieldName) {
         return node.has(fieldName) ? node.get(fieldName).asInt() : null;
+    }
+    
+    /**
+     * 根据患者姓名和生日查找患者ID
+     * 1. 先用姓名查找患者表
+     * 2. 如果只有一条记录，返回该患者ID
+     * 3. 如果有多条记录，再用姓名和生日年份匹配
+     * 4. 都找不到返回0L
+     * 
+     * @param patientName 患者姓名
+     * @param patientBirthday 患者生日（可能是年份如"1990"，或完整日期如"1990-05-15"），可为null
+     * @return 患者ID，找不到返回0L
+     */
+    private Long findPatientIdByNameAndBirthday(String patientName, String patientBirthday) {
+        if (patientName == null || patientName.trim().isEmpty()) {
+            return 0L;
+        }
+        
+        try {
+            // 1. 先用姓名查找患者表
+            LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Patient::getName, patientName.trim());
+            List<Patient> patients = patientMapper.selectList(wrapper);
+            
+            if (patients == null || patients.isEmpty()) {
+                log.debug("未找到患者，姓名: {}", patientName);
+                return 0L;
+            }
+            
+            // 2. 如果只有一条记录，直接返回
+            if (patients.size() == 1) {
+                Long patientId = patients.get(0).getId();
+                log.debug("通过姓名找到唯一患者，姓名: {}, 患者ID: {}", patientName, patientId);
+                return patientId;
+            }
+            
+            // 3. 如果有多条记录，且有生日信息，用姓名+生日年份匹配
+            if (patientBirthday != null && !patientBirthday.trim().isEmpty()) {
+                try {
+                    // 提取年份：如果传入的是完整日期（如"1990-05-15"），提取年份部分；如果只有年份（如"1990"），直接使用
+                    String inputYear = extractYear(patientBirthday.trim());
+                    if (inputYear != null) {
+                        for (Patient patient : patients) {
+                            if (patient.getBirthday() != null) {
+                                String patientYear = yearFormat.format(patient.getBirthday());
+                                if (patientYear.equals(inputYear)) {
+                                    Long patientId = patient.getId();
+                                    log.debug("通过姓名和生日年份找到患者，姓名: {}, 生日年份: {}, 患者ID: {}", 
+                                            patientName, inputYear, patientId);
+                                    return patientId;
+                                }
+                            }
+                        }
+                        log.debug("通过姓名找到多条记录，但生日年份不匹配，姓名: {}, 生日年份: {}", patientName, inputYear);
+                    }
+                } catch (Exception e) {
+                    log.warn("解析生日年份失败，姓名: {}, 生日: {}, 错误: {}", patientName, patientBirthday, e.getMessage());
+                }
+            } else {
+                log.debug("通过姓名找到多条记录，但没有生日信息，姓名: {}", patientName);
+            }
+            
+            // 4. 都找不到，返回0L
+            return 0L;
+            
+        } catch (Exception e) {
+            log.error("查找患者ID失败，姓名: {}, 生日: {}, 错误: {}", patientName, patientBirthday, e.getMessage(), e);
+            return 0L;
+        }
+    }
+    
+    /**
+     * 从生日字符串中提取年份
+     * 支持格式：yyyy（如"1990"）或 yyyy-MM-dd（如"1990-05-15"）
+     * 
+     * @param birthdayStr 生日字符串
+     * @return 年份字符串，如果解析失败返回null
+     */
+    private String extractYear(String birthdayStr) {
+        if (birthdayStr == null || birthdayStr.trim().isEmpty()) {
+            return null;
+        }
+        
+        try {
+            // 如果只有4位数字，直接返回
+            if (birthdayStr.matches("^\\d{4}$")) {
+                return birthdayStr;
+            }
+            
+            // 如果是完整日期格式（yyyy-MM-dd），提取年份部分
+            if (birthdayStr.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                return birthdayStr.substring(0, 4);
+            }
+            
+            // 尝试解析为日期，然后提取年份
+            Date date = dateFormat.parse(birthdayStr);
+            return yearFormat.format(date);
+        } catch (Exception e) {
+            log.warn("提取生日年份失败，生日字符串: {}, 错误: {}", birthdayStr, e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * 更新治疗记录主表的MEP值
+     * 
+     * @param treatmentRecordId 治疗记录ID
+     * @param mepValue MEP值
+     * @param patientId 患者ID
+     */
+    private void updateTreatmentRecordMepValue(Long treatmentRecordId, Integer mepValue, Long patientId) {
+        try {
+            TreatmentRecord treatmentRecord = treatmentRecordMapper.selectById(treatmentRecordId);
+            if (treatmentRecord != null) {
+                treatmentRecord.setMepValue(mepValue);
+                treatmentRecord.setUpdateTime(new Date());
+                treatmentRecordMapper.updateById(treatmentRecord);
+                log.info("更新治疗主表MEP值成功，treatmentRecordId: {}, mepValue: {}", treatmentRecordId, mepValue);
+                
+                // 同时更新患者表的MEP值
+                updatePatientMepValue(patientId, mepValue);
+            } else {
+                log.warn("未找到治疗记录，无法更新MEP值，treatmentRecordId: {}", treatmentRecordId);
+            }
+        } catch (Exception e) {
+            log.error("更新治疗主表MEP值失败，treatmentRecordId: {}, mepValue: {}", treatmentRecordId, mepValue, e);
+        }
+    }
+    
+    /**
+     * 更新患者表的MEP值
+     * 
+     * @param patientId 患者ID
+     * @param mepValue MEP值
+     */
+    private void updatePatientMepValue(Long patientId, Integer mepValue) {
+        if (patientId == null || patientId <= 0) {
+            log.debug("患者ID无效，跳过更新患者表MEP值，patientId: {}", patientId);
+            return;
+        }
+        
+        try {
+            Patient patient = patientMapper.selectById(patientId);
+            if (patient != null) {
+                patient.setMepValue(mepValue);
+                patient.setUpdatedAt(new Date());
+                patientMapper.updateById(patient);
+                log.info("更新患者表MEP值成功，patientId: {}, mepValue: {}", patientId, mepValue);
+            } else {
+                log.warn("未找到患者，无法更新MEP值，patientId: {}", patientId);
+            }
+        } catch (Exception e) {
+            log.error("更新患者表MEP值失败，patientId: {}, mepValue: {}", patientId, mepValue, e);
+        }
     }
 }

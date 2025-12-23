@@ -62,6 +62,11 @@ public class TreatmentRecordVO {
     private String patientAgeStr;
     
     /**
+     * 患者唯一标识（姓名_出生日期）
+     */
+    private String patientIdentifier;
+    
+    /**
      * 患者病房
      */
     private String patientRoom;

@@ -2,19 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.system.dao.MepRecordMapper">
 
-    <!-- 根据治疗记录ID查询MEP记录 -->
+    <!-- 根据治疗记录ID查询MEP记录（只查询关联的MEP记录） -->
     <select id="selectByTreatmentRecordId" resultType="cc.mrbird.febs.system.domain.vo.MepRecordVO">
         SELECT 
             id,
             treatment_record_id,
-            mep_record_id,
+            patient_identifier,
+            server_record_id,
+            local_mep_record_id,
+            device_id,
+            device_no,
+            source_device_no,
+            patient_name,
+            patient_sex,
+            patient_age_str,
+            patient_birthday,
+            record_time,
             d_type,
-            in_time,
+            timestamp,
             create_time,
             update_time
         FROM mep_record 
         WHERE treatment_record_id = #{treatmentRecordId}
-        ORDER BY id ASC
+        ORDER BY record_time DESC, create_time DESC
+    </select>
+    
+    <!-- 根据患者唯一标识查询MEP记录列表（包括关联的和独立的） -->
+    <select id="selectByPatientIdentifier" resultType="cc.mrbird.febs.system.domain.vo.MepRecordVO">
+        SELECT 
+            id,
+            treatment_record_id,
+            patient_identifier,
+            server_record_id,
+            local_mep_record_id,
+            device_id,
+            device_no,
+            source_device_no,
+            patient_name,
+            patient_sex,
+            patient_age_str,
+            patient_birthday,
+            record_time,
+            d_type,
+            timestamp,
+            create_time,
+            update_time
+        FROM mep_record 
+        WHERE patient_identifier = #{patientIdentifier}
+        ORDER BY record_time DESC, create_time DESC
     </select>
 
 </mapper>

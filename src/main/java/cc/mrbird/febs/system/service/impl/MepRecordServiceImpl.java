@@ -4,9 +4,13 @@ import cc.mrbird.febs.system.service.MepRecordService;
 import cc.mrbird.febs.system.domain.MepRecord;
 import cc.mrbird.febs.system.domain.MepData;
 import cc.mrbird.febs.system.domain.TreatmentRecord;
+import cc.mrbird.febs.system.domain.Patient;
+import cc.mrbird.febs.system.domain.vo.MepRecordVO;
+import cc.mrbird.febs.system.domain.vo.MepDataVO;
 import cc.mrbird.febs.system.dao.MepRecordMapper;
 import cc.mrbird.febs.system.dao.MepDataMapper;
 import cc.mrbird.febs.system.dao.TreatmentRecordMapper;
+import cc.mrbird.febs.system.dao.PatientMapper;
 import cc.mrbird.febs.system.utils.ServerRecordIdGenerator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +40,12 @@ public class MepRecordServiceImpl implements MepRecordService {
     @Autowired
     private TreatmentRecordMapper treatmentRecordMapper;
     
+    @Autowired
+    private PatientMapper patientMapper;
+    
     private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -45,7 +54,6 @@ public class MepRecordServiceImpl implements MepRecordService {
             log.info("开始保存MEP记录到数据库");
             
             // 1. 提取基本信息
-            String deviceId = jsonNode.get("deviceId").asText();
             Integer deviceNo = jsonNode.get("deviceNo").asInt();
             Long localMepRecordId = jsonNode.get("localMepRecordId").asLong();
             String patientName = jsonNode.get("patientName").asText();
@@ -96,6 +104,11 @@ public class MepRecordServiceImpl implements MepRecordService {
             // 8. 保存MEP数据
             if (jsonNode.has("mepDataList") && jsonNode.get("mepDataList").isArray()) {
                 saveMepDataList(jsonNode.get("mepDataList"), mepRecord.getId());
+                
+                // 8.1 从mepData中计算MEP值并更新治疗主表和患者表
+                if (treatmentRecordId != null) {
+                    updateMepValueFromMepData(mepRecord.getId(), treatmentRecordId, mepRecord.getPatientIdentifier());
+                }
             }
             
             log.info("MEP记录保存完成，serverRecordId: {}", serverRecordId);
@@ -120,6 +133,51 @@ public class MepRecordServiceImpl implements MepRecordService {
         LambdaQueryWrapper<MepRecord> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(MepRecord::getServerRecordId, serverRecordId);
         return mepRecordMapper.selectOne(wrapper);
+    }
+    
+    @Override
+    public List<MepRecordVO> getMepRecordVOByPatientIdentifier(String patientIdentifier) {
+        List<MepRecordVO> mepRecords = mepRecordMapper.selectByPatientIdentifier(patientIdentifier);
+        // 为每个MEP记录加载MEP数据
+        for (MepRecordVO mepRecord : mepRecords) {
+            List<MepDataVO> mepDataList = mepDataMapper.selectByMepRecordId(mepRecord.getId());
+            mepRecord.setMepDataList(mepDataList);
+        }
+        return mepRecords;
+    }
+    
+    @Override
+    public MepRecordVO getMepRecordDetailById(Long id) {
+        MepRecord mepRecord = mepRecordMapper.selectById(id);
+        if (mepRecord == null) {
+            return null;
+        }
+        
+        // 转换为VO
+        MepRecordVO vo = new MepRecordVO();
+        vo.setId(mepRecord.getId());
+        vo.setTreatmentRecordId(mepRecord.getTreatmentRecordId());
+        vo.setPatientIdentifier(mepRecord.getPatientIdentifier());
+        vo.setServerRecordId(mepRecord.getServerRecordId());
+        vo.setLocalMepRecordId(mepRecord.getLocalMepRecordId());
+        vo.setDeviceId(mepRecord.getDeviceId());
+        vo.setDeviceNo(mepRecord.getDeviceNo());
+        vo.setSourceDeviceNo(mepRecord.getSourceDeviceNo());
+        vo.setPatientName(mepRecord.getPatientName());
+        vo.setPatientSex(mepRecord.getPatientSex());
+        vo.setPatientAgeStr(mepRecord.getPatientAgeStr());
+        vo.setPatientBirthday(mepRecord.getPatientBirthday());
+        vo.setRecordTime(mepRecord.getRecordTime());
+        vo.setDType(mepRecord.getDType());
+        vo.setTimestamp(mepRecord.getTimestamp());
+        vo.setCreateTime(mepRecord.getCreateTime());
+        vo.setUpdateTime(mepRecord.getUpdateTime());
+        
+        // 加载MEP数据
+        List<MepDataVO> mepDataList = mepDataMapper.selectByMepRecordId(id);
+        vo.setMepDataList(mepDataList);
+        
+        return vo;
     }
     
     /**
@@ -351,7 +409,9 @@ public class MepRecordServiceImpl implements MepRecordService {
             treatmentRecord.setDeviceNo(deviceNo);
             
             // 患者信息
-            treatmentRecord.setPatientId(0L);
+            String patientBirthday = getStringValue(jsonNode, "patientBirthday");
+            Long patientId = findPatientIdByNameAndBirthday(patientName, patientBirthday);
+            treatmentRecord.setPatientId(patientId);
             treatmentRecord.setPatientName(patientName);
             treatmentRecord.setPatientSex(patientSex);
             treatmentRecord.setPatientAgeStr(patientAgeStr);
@@ -383,6 +443,183 @@ public class MepRecordServiceImpl implements MepRecordService {
         } catch (Exception e) {
             log.error("自动创建治疗记录失败", e);
             return null; // 创建失败，返回null，允许MEP记录独立保存
+        }
+    }
+    
+    /**
+     * 根据患者姓名和生日查找患者ID
+     * 1. 先用姓名查找患者表
+     * 2. 如果只有一条记录，返回该患者ID
+     * 3. 如果有多条记录，再用姓名和生日年份匹配
+     * 4. 都找不到返回0L
+     * 
+     * @param patientName 患者姓名
+     * @param patientBirthday 患者生日（可能是年份如"1990"，或完整日期如"1990-05-15"），可为null
+     * @return 患者ID，找不到返回0L
+     */
+    private Long findPatientIdByNameAndBirthday(String patientName, String patientBirthday) {
+        if (patientName == null || patientName.trim().isEmpty()) {
+            return 0L;
+        }
+        
+        try {
+            // 1. 先用姓名查找患者表
+            LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Patient::getName, patientName.trim());
+            List<Patient> patients = patientMapper.selectList(wrapper);
+            
+            if (patients == null || patients.isEmpty()) {
+                log.debug("未找到患者，姓名: {}", patientName);
+                return 0L;
+            }
+            
+            // 2. 如果只有一条记录，直接返回
+            if (patients.size() == 1) {
+                Long patientId = patients.get(0).getId();
+                log.debug("通过姓名找到唯一患者，姓名: {}, 患者ID: {}", patientName, patientId);
+                return patientId;
+            }
+            
+            // 3. 如果有多条记录，且有生日信息，用姓名+生日年份匹配
+            if (patientBirthday != null && !patientBirthday.trim().isEmpty()) {
+                try {
+                    // 提取年份：如果传入的是完整日期（如"1990-05-15"），提取年份部分；如果只有年份（如"1990"），直接使用
+                    String inputYear = extractYear(patientBirthday.trim());
+                    if (inputYear != null) {
+                        for (Patient patient : patients) {
+                            if (patient.getBirthday() != null) {
+                                String patientYear = yearFormat.format(patient.getBirthday());
+                                if (patientYear.equals(inputYear)) {
+                                    Long patientId = patient.getId();
+                                    log.debug("通过姓名和生日年份找到患者，姓名: {}, 生日年份: {}, 患者ID: {}", 
+                                            patientName, inputYear, patientId);
+                                    return patientId;
+                                }
+                            }
+                        }
+                        log.debug("通过姓名找到多条记录，但生日年份不匹配，姓名: {}, 生日年份: {}", patientName, inputYear);
+                    }
+                } catch (Exception e) {
+                    log.warn("解析生日年份失败，姓名: {}, 生日: {}, 错误: {}", patientName, patientBirthday, e.getMessage());
+                }
+            } else {
+                log.debug("通过姓名找到多条记录，但没有生日信息，姓名: {}", patientName);
+            }
+            
+            // 4. 都找不到，返回0L
+            return 0L;
+            
+        } catch (Exception e) {
+            log.error("查找患者ID失败，姓名: {}, 生日: {}, 错误: {}", patientName, patientBirthday, e.getMessage(), e);
+            return 0L;
+        }
+    }
+    
+    /**
+     * 从生日字符串中提取年份
+     * 支持格式：yyyy（如"1990"）或 yyyy-MM-dd（如"1990-05-15"）
+     * 
+     * @param birthdayStr 生日字符串
+     * @return 年份字符串，如果解析失败返回null
+     */
+    private String extractYear(String birthdayStr) {
+        if (birthdayStr == null || birthdayStr.trim().isEmpty()) {
+            return null;
+        }
+        
+        try {
+            // 如果只有4位数字，直接返回
+            if (birthdayStr.matches("^\\d{4}$")) {
+                return birthdayStr;
+            }
+            
+            // 如果是完整日期格式（yyyy-MM-dd），提取年份部分
+            if (birthdayStr.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                return birthdayStr.substring(0, 4);
+            }
+            
+            // 尝试解析为日期，然后提取年份
+            Date date = dateFormat.parse(birthdayStr);
+            return yearFormat.format(date);
+        } catch (Exception e) {
+            log.warn("提取生日年份失败，生日字符串: {}, 错误: {}", birthdayStr, e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * 从MEP数据中计算MEP值并更新治疗主表和患者表
+     * 
+     * @param mepRecordId MEP记录ID
+     * @param treatmentRecordId 治疗记录ID
+     * @param patientIdentifier 患者唯一标识
+     */
+    private void updateMepValueFromMepData(Long mepRecordId, Long treatmentRecordId, String patientIdentifier) {
+        try {
+            // 1. 查询MEP数据
+            List<MepDataVO> mepDataList = mepDataMapper.selectByMepRecordId(mepRecordId);
+            if (mepDataList == null || mepDataList.isEmpty()) {
+                log.warn("MEP记录没有数据，无法计算MEP值，mepRecordId: {}", mepRecordId);
+                return;
+            }
+            
+            // 2. 计算MEP值（取mt值，如果有多个mepData，取第一个有效的mt值）
+            Integer mepValue = null;
+            for (MepDataVO mepData : mepDataList) {
+                if (mepData.getMt() != null) {
+                    mepValue = mepData.getMt();
+                    break; // 取第一个有效的mt值
+                }
+            }
+            
+            if (mepValue == null) {
+                log.warn("无法从MEP数据中获取MEP值（mt字段为空），mepRecordId: {}", mepRecordId);
+                return;
+            }
+            
+            // 3. 更新治疗主表的MEP值
+            TreatmentRecord treatmentRecord = treatmentRecordMapper.selectById(treatmentRecordId);
+            if (treatmentRecord != null) {
+                treatmentRecord.setMepValue(mepValue);
+                treatmentRecord.setUpdateTime(new Date());
+                treatmentRecordMapper.updateById(treatmentRecord);
+                log.info("更新治疗主表MEP值成功，treatmentRecordId: {}, mepValue: {}", treatmentRecordId, mepValue);
+                
+                // 4. 更新患者表的MEP值
+                updatePatientMepValue(treatmentRecord.getPatientId(), mepValue);
+            } else {
+                log.warn("未找到治疗记录，无法更新MEP值，treatmentRecordId: {}", treatmentRecordId);
+            }
+            
+        } catch (Exception e) {
+            log.error("从MEP数据更新MEP值失败，mepRecordId: {}, treatmentRecordId: {}", mepRecordId, treatmentRecordId, e);
+        }
+    }
+    
+    /**
+     * 更新患者表的MEP值
+     * 
+     * @param patientId 患者ID
+     * @param mepValue MEP值
+     */
+    private void updatePatientMepValue(Long patientId, Integer mepValue) {
+        if (patientId == null || patientId <= 0) {
+            log.debug("患者ID无效，跳过更新患者表MEP值，patientId: {}", patientId);
+            return;
+        }
+        
+        try {
+            Patient patient = patientMapper.selectById(patientId);
+            if (patient != null) {
+                patient.setMepValue(mepValue);
+                patient.setUpdatedAt(new Date());
+                patientMapper.updateById(patient);
+                log.info("更新患者表MEP值成功，patientId: {}, mepValue: {}", patientId, mepValue);
+            } else {
+                log.warn("未找到患者，无法更新MEP值，patientId: {}", patientId);
+            }
+        } catch (Exception e) {
+            log.error("更新患者表MEP值失败，patientId: {}, mepValue: {}", patientId, mepValue, e);
         }
     }
     

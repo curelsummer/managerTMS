@@ -52,4 +52,7 @@ public class Patient implements Serializable {
     /** 阈值来源: manual/measure */
     @TableField("threshold_source")
     private String thresholdSource;
+    /** MEP值 */
+    @TableField("mep_value")
+    private Integer mepValue;
 } 
