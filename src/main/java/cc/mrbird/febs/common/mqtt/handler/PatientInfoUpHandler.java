@@ -52,7 +52,8 @@ public class PatientInfoUpHandler {
             patientId = getText(data, "patientId");
         }
         if (patientId == null || patientId.isEmpty()) {
-            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "missing_patient_id");
+            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                               new HashMap<>(), true, -4, "missing_patient_id");
             return;
         }
         
@@ -61,14 +62,16 @@ public class PatientInfoUpHandler {
         try {
             pid = Long.valueOf(patientId);
         } catch (NumberFormatException e) {
-            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "invalid_patient_id");
+            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                             new HashMap<>(), true, -3, "invalid_patient_id");
             return;
         }
         
         Patient patient = patientService.getById(pid);
         if (patient == null) {
             // 患者不存在
-            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "patient_not_found");
+            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                              new HashMap<>(), true, -2, "patient_not_found");
             return;
         }
         
@@ -76,15 +79,18 @@ public class PatientInfoUpHandler {
         boolean hasThreshold = thresholdService.existsPatientThreshold(patientId);
         if (!hasThreshold) {
             // 患者存在但没有阈值
-            mqttClientService.sendThresholdRequest(p.getDeviceType(), p.getDeviceId(), "no_threshold");
+            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                              new HashMap<>(), true, -1, "no_threshold");
             return;
         }
         Map<String, Object> prescription = prescriptionService.getByPatient(patientId);
         if (prescription == null || prescription.isEmpty()) {
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), new HashMap<>(), true);
+            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                              new HashMap<>(), true, 0, null);
             return;
         }
-        mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), prescription, true);
+        mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                          prescription, true, 0, null);
     }
 
     private String getText(JsonNode node, String field) {

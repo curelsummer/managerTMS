@@ -80,7 +80,8 @@ public class ThresholdResultUpHandler {
         try {
             Map<String, Object> prescription = prescriptionService.getByPatient(patientIdStr);
             if (prescription != null && !prescription.isEmpty()) {
-                mqttClientService.sendPrescription(parts.getDeviceType(), parts.getDeviceId(), prescription, true);
+                mqttClientService.sendPrescription(parts.getDeviceType(), parts.getDeviceId(), 
+                                                  prescription, true, 0, null);
             }
         } catch (Exception e) {
             log.warn("MQTT threshold-result-up 下发处方异常, patientId={}, err={}", patientId, e.getMessage());
