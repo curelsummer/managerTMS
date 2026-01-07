@@ -597,10 +597,10 @@ public class MepRecordServiceImpl implements MepRecordService {
     }
     
     /**
-     * 更新患者表的MEP值
+     * 更新患者表的MEP值（更新到threshold_value字段）
      * 
      * @param patientId 患者ID
-     * @param mepValue MEP值
+     * @param mepValue MEP值，将更新到threshold_value字段
      */
     private void updatePatientMepValue(Long patientId, Integer mepValue) {
         if (patientId == null || patientId <= 0) {
@@ -611,10 +611,12 @@ public class MepRecordServiceImpl implements MepRecordService {
         try {
             Patient patient = patientMapper.selectById(patientId);
             if (patient != null) {
-                patient.setMepValue(mepValue);
+                // MEP值更新到threshold_value字段
+                patient.setThresholdValue(mepValue);
+                patient.setThresholdSetAt(new Date());
                 patient.setUpdatedAt(new Date());
                 patientMapper.updateById(patient);
-                log.info("更新患者表MEP值成功，patientId: {}, mepValue: {}", patientId, mepValue);
+                log.info("更新患者表MEP值（threshold_value）成功，patientId: {}, mepValue: {}", patientId, mepValue);
             } else {
                 log.warn("未找到患者，无法更新MEP值，patientId: {}", patientId);
             }

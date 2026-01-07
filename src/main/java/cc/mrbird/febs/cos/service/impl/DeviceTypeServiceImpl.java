@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+// import org.springframework.scheduling.annotation.Scheduled;  // 已禁用定时任务
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -104,7 +104,7 @@ public class DeviceTypeServiceImpl extends ServiceImpl<DeviceTypeMapper, DeviceT
     /**
      * 定时任务设置设备上报数据
      */
-    @Scheduled(fixedRate = 300000)
+    // @Scheduled(fixedRate = 300000)  // 已禁用定时任务
     public void setDeviceRecord() {
         // 获取设备信息
         List<DeviceInfo> deviceInfoList = deviceInfoService.list();
@@ -153,7 +153,7 @@ public class DeviceTypeServiceImpl extends ServiceImpl<DeviceTypeMapper, DeviceT
     /**
      * 定时任务处理时常报警信息
      */
-    @Scheduled(fixedRate = 350000)
+    // @Scheduled(fixedRate = 350000)  // 已禁用定时任务
     public void setDeviceAlert() {
         // 获取设备信息
         List<DeviceInfo> deviceInfoList = deviceInfoService.list(Wrappers.<DeviceInfo>lambdaQuery().eq(DeviceInfo::getOpenFlag, "1"));

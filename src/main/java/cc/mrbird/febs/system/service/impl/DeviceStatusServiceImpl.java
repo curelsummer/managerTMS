@@ -39,30 +39,29 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceOnline(Long deviceId) {
-        System.out.println("=== 设备上线处理开始，设备ID: " + deviceId + " ===");
+        // System.out.println("设备上线: " + deviceId);
         try {
             // 更新数据库
             Device device = deviceService.getById(deviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 device.setStatus("online");
                 
                 // 注意：这里只是设置状态为online，新字段的值需要在调用时传入
                 // 新字段的更新应该在WebSocket消息处理时进行
                 
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库更新结果: " + updateResult);
+                // System.out.println("数据库更新结果: " + updateResult);
             } else {
-                System.out.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
+                System.err.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
             }
             
             // 更新Redis
             redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + deviceId, "online");
             redisTemplate.opsForValue().set(DEVICE_HEARTBEAT_KEY + deviceId, String.valueOf(System.currentTimeMillis()), HEARTBEAT_TIMEOUT, TimeUnit.SECONDS);
-            System.out.println("Redis状态更新完成");
+            // System.out.println("Redis状态更新完成");
             
             pushStatus(deviceId, "online");
-            System.out.println("=== 设备上线处理完成 ===");
         } catch (Exception e) {
             System.err.println("设备上线处理异常: " + e.getMessage());
             e.printStackTrace();
@@ -71,32 +70,31 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceOffline(Long deviceId) {
-        System.out.println("=== 设备下线处理开始，设备ID: " + deviceId + " ===");
+        // System.out.println("设备下线: " + deviceId);
         try {
             // 更新数据库
             Device device = deviceService.getById(deviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 device.setStatus("offline");
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库更新结果: " + updateResult);
+                // System.out.println("数据库更新结果: " + updateResult);
             } else {
                 System.err.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
                 System.err.println("请检查设备ID是否正确，或者设备是否已从数据库中删除");
             }
             
             // 更新Redis
-            System.out.println("开始更新Redis状态...");
+            // System.out.println("开始更新Redis状态...");
             try {
                 redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + deviceId, "offline");
-                System.out.println("Redis状态更新完成");
+                // System.out.println("Redis状态更新完成");
             } catch (Exception e) {
                 System.err.println("Redis状态更新失败: " + e.getMessage());
                 e.printStackTrace();
             }
             
             pushStatus(deviceId, "offline");
-            System.out.println("=== 设备下线处理完成 ===");
         } catch (Exception e) {
             System.err.println("设备下线处理异常: " + e.getMessage());
             System.err.println("异常类型: " + e.getClass().getSimpleName());
@@ -106,45 +104,41 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceHeartbeat(Long deviceId) {
-        System.out.println("=== 设备心跳处理开始，设备ID: " + deviceId + " ===");
         try {
             Date currentTime = new Date();
             
             // 更新Redis心跳时间
             redisTemplate.opsForValue().set(DEVICE_HEARTBEAT_KEY + deviceId, String.valueOf(System.currentTimeMillis()), HEARTBEAT_TIMEOUT, TimeUnit.SECONDS);
-            System.out.println("Redis心跳更新完成");
+            // System.out.println("Redis心跳更新完成");
             
             // 更新数据库设备状态和心跳时间
             Device device = deviceService.getById(deviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 
                 // 更新状态为online（如果不是的话）
                 if (!"online".equals(device.getStatus())) {
                     device.setStatus("online");
-                    System.out.println("更新设备状态为online");
+                    // System.out.println("更新设备状态为online");
                 }
                 
                 // 更新最后心跳时间
                 device.setLastHeartbeat(currentTime);
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库心跳时间更新结果: " + updateResult);
+                // System.out.println("数据库心跳时间更新结果: " + updateResult);
                 
             } else {
-                System.out.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
+                System.err.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
             }
             
             // 检查Redis状态，如果不是online则设置为online
             String currentStatus = getDeviceStatus(deviceId);
-            System.out.println("当前Redis状态: " + currentStatus);
+            // System.out.println("当前Redis状态: " + currentStatus);
             if (!"online".equals(currentStatus)) {
-                System.out.println("Redis状态不是online，调用deviceOnline方法");
+                // System.out.println("Redis状态不是online，调用deviceOnline方法");
                 deviceOnline(deviceId);
-            } else {
-                System.out.println("Redis状态已经是online，无需更新");
             }
             
-            System.out.println("=== 设备心跳处理完成 ===");
         } catch (Exception e) {
             System.err.println("设备心跳处理异常: " + e.getMessage());
             e.printStackTrace();
@@ -179,13 +173,13 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             if (devices.size() == 1) {
                 // 只有一条记录，返回对应的deviceId
                 Long deviceId = devices.get(0).getDeviceId();
-                System.out.println("通过deviceNo " + deviceNo + " 查询到唯一deviceId: " + deviceId);
+                // System.out.println("通过deviceNo " + deviceNo + " 查询到唯一deviceId: " + deviceId);
                 return deviceId;
             } else if (devices.size() == 0) {
-                System.out.println("通过deviceNo " + deviceNo + " 未查询到任何记录");
+                // System.out.println("通过deviceNo " + deviceNo + " 未查询到任何记录");
                 return null;
             } else {
-                System.out.println("通过deviceNo " + deviceNo + " 查询到 " + devices.size() + " 条记录，不做处理");
+                System.err.println("通过deviceNo " + deviceNo + " 查询到 " + devices.size() + " 条记录，不做处理");
                 return null;
             }
         } catch (Exception e) {
@@ -197,15 +191,15 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceOnlineWithInfo(Long deviceId, Integer deviceNo, Integer batTimes, Integer capTimes, Integer treatmentStatus) {
-        System.out.println("=== 设备上线处理开始（包含新字段），设备ID: " + deviceId + " ===");
+        // System.out.println("设备上线: " + deviceId);
         try {
             // 先通过deviceNo查询数据库，获取实际的deviceId
             Long actualDeviceId = null;
             if (deviceNo != null) {
-                System.out.println("通过设备编号查询: " + deviceNo);
+                // System.out.println("通过设备编号查询: " + deviceNo);
                 actualDeviceId = getDeviceIdByDeviceNo(deviceNo);
                 if (actualDeviceId == null) {
-                    System.out.println("无法获取有效的deviceId，跳过处理");
+                    System.err.println("无法获取有效的deviceId，跳过处理");
                     return;
                 }
             } else {
@@ -215,73 +209,72 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             // 更新数据库 - 一次查询，一次更新
             Device device = deviceService.getById(actualDeviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 
                 // 在更新之前保存旧的治疗状态，用于检测变化
                 Integer oldTreatmentStatus = device.getTreatmentStatus();
-                System.out.println("旧的治疗状态: " + oldTreatmentStatus);
+                // System.out.println("旧的治疗状态: " + oldTreatmentStatus);
                 
                 // 同时更新状态和新字段
                 device.setStatus("online");
                 if (deviceNo != null) {
                     device.setDeviceNo(deviceNo);
-                    System.out.println("设置设备编号: " + deviceNo);
+                    // System.out.println("设置设备编号: " + deviceNo);
                 }
                 if (batTimes != null) {
                     device.setBatTimes(batTimes);
-                    System.out.println("设置拍子使用次数: " + batTimes);
+                    // System.out.println("设置拍子使用次数: " + batTimes);
                 }
                 if (capTimes != null) {
                     device.setCapTimes(capTimes);
-                    System.out.println("设置电容使用次数: " + capTimes);
+                    // System.out.println("设置电容使用次数: " + capTimes);
                 }
                 if (treatmentStatus != null) {
                     device.setTreatmentStatus(treatmentStatus);
-                    System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
                 }
                 
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库更新结果: " + updateResult);
+                // System.out.println("数据库更新结果: " + updateResult);
                 
                 if (updateResult) {
-                    System.out.println("=== 设备信息更新成功 ===");
-                    System.out.println("设备ID: " + actualDeviceId);
-                    System.out.println("设备编号: " + deviceNo);
-                    System.out.println("拍子使用次数: " + batTimes);
-                    System.out.println("电容使用次数: " + capTimes);
-                    System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("=== 设备信息更新成功 ===");
+                    // System.out.println("设备ID: " + actualDeviceId);
+                    // System.out.println("设备编号: " + deviceNo);
+                    // System.out.println("拍子使用次数: " + batTimes);
+                    // System.out.println("电容使用次数: " + capTimes);
+                    // System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
                     
                     // 每次上线都推送状态更新（简化逻辑，确保推送）
-                    System.out.println("=== 推送上线状态更新 ===");
+                    // System.out.println("=== 推送上线状态更新 ===");
                     pushStatus(actualDeviceId, device.getStatus());
                     
                     // 如果治疗状态发生变化，额外记录日志
-                    if (treatmentStatus != null && oldTreatmentStatus != null && 
-                        !oldTreatmentStatus.equals(treatmentStatus)) {
-                        System.out.println("=== 检测到治疗状态变化 ===");
-                        System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
-                    } else if (treatmentStatus != null && oldTreatmentStatus == null) {
-                        System.out.println("=== 首次设置治疗状态 ===");
-                    } else {
-                        System.out.println("=== 治疗状态未发生变化 ===");
-                        System.out.println("旧治疗状态: " + oldTreatmentStatus);
-                        System.out.println("新治疗状态: " + treatmentStatus);
-                    }
+                    // if (treatmentStatus != null && oldTreatmentStatus != null && 
+                    //     !oldTreatmentStatus.equals(treatmentStatus)) {
+                    //     System.out.println("=== 检测到治疗状态变化 ===");
+                    //     System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
+                    // } else if (treatmentStatus != null && oldTreatmentStatus == null) {
+                    //     System.out.println("=== 首次设置治疗状态 ===");
+                    // } else {
+                    //     System.out.println("=== 治疗状态未发生变化 ===");
+                    //     System.out.println("旧治疗状态: " + oldTreatmentStatus);
+                    //     System.out.println("新治疗状态: " + treatmentStatus);
+                    // }
                 } else {
-                    System.err.println("=== 设备信息更新失败 ===");
+                    System.err.println("设备信息更新失败");
                 }
                 
             } else {
-                System.out.println("警告：未找到设备ID为 " + actualDeviceId + " 的设备记录");
+                System.err.println("警告：未找到设备ID为 " + actualDeviceId + " 的设备记录");
             }
             
             // 更新Redis
             redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + actualDeviceId, "online");
             redisTemplate.opsForValue().set(DEVICE_HEARTBEAT_KEY + actualDeviceId, String.valueOf(System.currentTimeMillis()), HEARTBEAT_TIMEOUT, TimeUnit.SECONDS);
-            System.out.println("Redis状态更新完成");
+            // System.out.println("Redis状态更新完成");
             
             pushStatus(actualDeviceId, "online");
-            System.out.println("=== 设备上线处理完成（包含新字段） ===");
         } catch (Exception e) {
             System.err.println("设备上线处理异常: " + e.getMessage());
             e.printStackTrace();
@@ -290,15 +283,15 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceOfflineWithInfo(Long deviceId, Integer deviceNo, Integer batTimes, Integer capTimes, Integer treatmentStatus) {
-        System.out.println("=== 设备下线处理开始（包含新字段），设备ID: " + deviceId + " ===");
+        // System.out.println("设备下线: " + deviceId);
         try {
             // 先通过deviceNo查询数据库，获取实际的deviceId
             Long actualDeviceId = null;
             if (deviceNo != null) {
-                System.out.println("通过设备编号查询: " + deviceNo);
+                // System.out.println("通过设备编号查询: " + deviceNo);
                 actualDeviceId = getDeviceIdByDeviceNo(deviceNo);
                 if (actualDeviceId == null) {
-                    System.out.println("无法获取有效的deviceId，跳过处理");
+                    System.err.println("无法获取有效的deviceId，跳过处理");
                     return;
                 }
             } else {
@@ -308,60 +301,60 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             // 更新数据库 - 一次查询，一次更新
             Device device = deviceService.getById(actualDeviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 
                 // 在更新之前保存旧的治疗状态，用于检测变化
                 Integer oldTreatmentStatus = device.getTreatmentStatus();
-                System.out.println("旧的治疗状态: " + oldTreatmentStatus);
+                // System.out.println("旧的治疗状态: " + oldTreatmentStatus);
                 
                 // 同时更新状态和新字段
                 device.setStatus("offline");
                 if (deviceNo != null) {
                     device.setDeviceNo(deviceNo);
-                    System.out.println("设置设备编号: " + deviceNo);
+                    // System.out.println("设置设备编号: " + deviceNo);
                 }
                 if (batTimes != null) {
                     device.setBatTimes(batTimes);
-                    System.out.println("设置拍子使用次数: " + batTimes);
+                    // System.out.println("设置拍子使用次数: " + batTimes);
                 }
                 if (capTimes != null) {
                     device.setCapTimes(capTimes);
-                    System.out.println("设置电容使用次数: " + capTimes);
+                    // System.out.println("设置电容使用次数: " + capTimes);
                 }
                 if (treatmentStatus != null) {
                     device.setTreatmentStatus(treatmentStatus);
-                    System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
                 }
                 
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库更新结果: " + updateResult);
+                // System.out.println("数据库更新结果: " + updateResult);
                 
                 if (updateResult) {
-                    System.out.println("=== 设备信息更新成功 ===");
-                    System.out.println("设备ID: " + actualDeviceId);
-                    System.out.println("设备编号: " + deviceNo);
-                    System.out.println("拍子使用次数: " + batTimes);
-                    System.out.println("电容使用次数: " + capTimes);
-                    System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("=== 设备信息更新成功 ===");
+                    // System.out.println("设备ID: " + actualDeviceId);
+                    // System.out.println("设备编号: " + deviceNo);
+                    // System.out.println("拍子使用次数: " + batTimes);
+                    // System.out.println("电容使用次数: " + capTimes);
+                    // System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
                     
                     // 每次下线都推送状态更新（简化逻辑，确保推送）
-                    System.out.println("=== 推送下线状态更新 ===");
+                    // System.out.println("=== 推送下线状态更新 ===");
                     pushStatus(actualDeviceId, device.getStatus());
                     
                     // 如果治疗状态发生变化，额外记录日志
-                    if (treatmentStatus != null && oldTreatmentStatus != null && 
-                        !oldTreatmentStatus.equals(treatmentStatus)) {
-                        System.out.println("=== 检测到治疗状态变化 ===");
-                        System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
-                    } else if (treatmentStatus != null && oldTreatmentStatus == null) {
-                        System.out.println("=== 首次设置治疗状态 ===");
-                    } else {
-                        System.out.println("=== 治疗状态未发生变化 ===");
-                        System.out.println("旧治疗状态: " + oldTreatmentStatus);
-                        System.out.println("新治疗状态: " + treatmentStatus);
-                    }
+                    // if (treatmentStatus != null && oldTreatmentStatus != null && 
+                    //     !oldTreatmentStatus.equals(treatmentStatus)) {
+                    //     System.out.println("=== 检测到治疗状态变化 ===");
+                    //     System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
+                    // } else if (treatmentStatus != null && oldTreatmentStatus == null) {
+                    //     System.out.println("=== 首次设置治疗状态 ===");
+                    // } else {
+                    //     System.out.println("=== 治疗状态未发生变化 ===");
+                    //     System.out.println("旧治疗状态: " + oldTreatmentStatus);
+                    //     System.out.println("新治疗状态: " + treatmentStatus);
+                    // }
                 } else {
-                    System.err.println("=== 设备信息更新失败 ===");
+                    System.err.println("设备信息更新失败");
                 }
                 
             } else {
@@ -370,10 +363,9 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             
             // 更新Redis
             redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + actualDeviceId, "offline");
-            System.out.println("Redis状态更新完成");
+            // System.out.println("Redis状态更新完成");
             
             pushStatus(actualDeviceId, "offline");
-            System.out.println("=== 设备下线处理完成（包含新字段） ===");
         } catch (Exception e) {
             System.err.println("设备下线处理异常: " + e.getMessage());
             e.printStackTrace();
@@ -382,17 +374,16 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
     @Override
     public void deviceHeartbeatWithInfo(Long deviceId, Integer deviceNo, Integer batTimes, Integer capTimes, Integer treatmentStatus) {
-        System.out.println("=== 设备心跳处理开始（包含新字段），设备ID: " + deviceId + " ===");
         try {
             Date currentTime = new Date();
             
             // 先通过deviceNo查询数据库，获取实际的deviceId
             Long actualDeviceId = null;
             if (deviceNo != null) {
-                System.out.println("通过设备编号查询: " + deviceNo);
+                // System.out.println("通过设备编号查询: " + deviceNo);
                 actualDeviceId = getDeviceIdByDeviceNo(deviceNo);
                 if (actualDeviceId == null) {
-                    System.out.println("无法获取有效的deviceId，跳过处理");
+                    System.err.println("无法获取有效的deviceId，跳过处理");
                     return;
                 }
             } else {
@@ -401,82 +392,81 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             
             // 更新Redis心跳时间
             redisTemplate.opsForValue().set(DEVICE_HEARTBEAT_KEY + actualDeviceId, String.valueOf(System.currentTimeMillis()), HEARTBEAT_TIMEOUT, TimeUnit.SECONDS);
-            System.out.println("Redis心跳更新完成");
+            // System.out.println("Redis心跳更新完成");
             
             // 更新数据库 - 一次查询，一次更新
             Device device = deviceService.getById(actualDeviceId);
             if (device != null) {
-                System.out.println("找到设备，当前状态: " + device.getStatus());
+                // System.out.println("找到设备，当前状态: " + device.getStatus());
                 
                 // 在更新之前保存旧的治疗状态，用于检测变化
                 Integer oldTreatmentStatus = device.getTreatmentStatus();
-                System.out.println("旧的治疗状态: " + oldTreatmentStatus);
+                // System.out.println("旧的治疗状态: " + oldTreatmentStatus);
                 
                 // 同时更新状态、心跳时间和新字段
                 if (!"online".equals(device.getStatus())) {
                     device.setStatus("online");
-                    System.out.println("更新设备状态为online");
+                    // System.out.println("更新设备状态为online");
                 }
                 
                 device.setLastHeartbeat(currentTime);
                 
                 if (deviceNo != null) {
                     device.setDeviceNo(deviceNo);
-                    System.out.println("设置设备编号: " + deviceNo);
+                    // System.out.println("设置设备编号: " + deviceNo);
                 }
                 if (batTimes != null) {
                     device.setBatTimes(batTimes);
-                    System.out.println("设置拍子使用次数: " + batTimes);
+                    // System.out.println("设置拍子使用次数: " + batTimes);
                 }
                 if (capTimes != null) {
                     device.setCapTimes(capTimes);
-                    System.out.println("设置电容使用次数: " + capTimes);
+                    // System.out.println("设置电容使用次数: " + capTimes);
                 }
                 if (treatmentStatus != null) {
                     device.setTreatmentStatus(treatmentStatus);
-                    System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("设置治疗状态: " + treatmentStatus + " (" + (treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
                 }
                 
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库心跳时间更新结果: " + updateResult);
+                // System.out.println("数据库心跳时间更新结果: " + updateResult);
                 
                 if (updateResult) {
-                    System.out.println("=== 设备信息更新成功 ===");
-                    System.out.println("设备ID: " + actualDeviceId);
-                    System.out.println("设备编号: " + deviceNo);
-                    System.out.println("拍子使用次数: " + batTimes);
-                    System.out.println("电容使用次数: " + capTimes);
-                    System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
-                    System.out.println("最后心跳时间: " + currentTime);
+                    // System.out.println("=== 设备信息更新成功 ===");
+                    // System.out.println("设备ID: " + actualDeviceId);
+                    // System.out.println("设备编号: " + deviceNo);
+                    // System.out.println("拍子使用次数: " + batTimes);
+                    // System.out.println("电容使用次数: " + capTimes);
+                    // System.out.println("治疗状态: " + treatmentStatus + " (" + (treatmentStatus != null && treatmentStatus == 1 ? "刺激状态" : "非刺激状态") + ")");
+                    // System.out.println("最后心跳时间: " + currentTime);
                     
                     // 每次心跳都推送状态更新（简化逻辑，确保推送）
-                    System.out.println("=== 推送心跳状态更新 ===");
-                    System.out.println("设备ID: " + actualDeviceId);
-                    System.out.println("当前状态: " + device.getStatus());
-                    System.out.println("当前治疗状态: " + treatmentStatus);
+                    // System.out.println("=== 推送心跳状态更新 ===");
+                    // System.out.println("设备ID: " + actualDeviceId);
+                    // System.out.println("当前状态: " + device.getStatus());
+                    // System.out.println("当前治疗状态: " + treatmentStatus);
                     pushStatus(actualDeviceId, device.getStatus());
                     
                     // 如果治疗状态发生变化，额外记录日志
-                    if (treatmentStatus != null && oldTreatmentStatus != null && 
-                        !oldTreatmentStatus.equals(treatmentStatus)) {
-                        System.out.println("=== 检测到治疗状态变化 ===");
-                        System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
-                    } else if (treatmentStatus != null && oldTreatmentStatus == null) {
-                        System.out.println("=== 首次设置治疗状态 ===");
-                    } else {
-                        System.out.println("=== 治疗状态未发生变化 ===");
-                        System.out.println("旧治疗状态: " + oldTreatmentStatus);
-                        System.out.println("新治疗状态: " + treatmentStatus);
-                    }
+                    // if (treatmentStatus != null && oldTreatmentStatus != null && 
+                    //     !oldTreatmentStatus.equals(treatmentStatus)) {
+                    //     System.out.println("=== 检测到治疗状态变化 ===");
+                    //     System.out.println("治疗状态变化: " + oldTreatmentStatus + " -> " + treatmentStatus);
+                    // } else if (treatmentStatus != null && oldTreatmentStatus == null) {
+                    //     System.out.println("=== 首次设置治疗状态 ===");
+                    // } else {
+                    //     System.out.println("=== 治疗状态未发生变化 ===");
+                    //     System.out.println("旧治疗状态: " + oldTreatmentStatus);
+                    //     System.out.println("新治疗状态: " + treatmentStatus);
+                    // }
                 } else {
-                    System.err.println("=== 设备信息更新失败 ===");
+                    System.err.println("设备信息更新失败");
                 }
                 
             } else {
-                System.out.println("警告：未找到设备ID为 " + actualDeviceId + " 的设备记录");
+                System.err.println("警告：未找到设备ID为 " + actualDeviceId + " 的设备记录");
             }
             
-            System.out.println("=== 设备心跳处理完成（包含新字段） ===");
         } catch (Exception e) {
             System.err.println("设备心跳处理异常: " + e.getMessage());
             e.printStackTrace();
@@ -486,16 +476,13 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
     // 定时任务：检查心跳超时设备自动下线（Redis方式）
     @Scheduled(fixedDelay = 60000)
     public void checkHeartbeatTimeout() {
-        System.out.println("=== 心跳超时检查定时任务启动 ===");
         try {
-            System.out.println("=== 开始心跳超时检查 ===");
-            
             // 检查Redis连接（确保及时关闭连接归还给连接池）
             org.springframework.data.redis.connection.RedisConnection conn = null;
             try {
                 conn = redisTemplate.getConnectionFactory().getConnection();
                 conn.ping();
-                System.out.println("Redis连接正常");
+                // System.out.println("Redis连接正常");
             } catch (Exception e) {
                 System.err.println("Redis连接失败，跳过心跳检查: " + e.getMessage());
                 return;
@@ -510,7 +497,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             int timeoutCount = 0;
             
             if (keys != null) {
-                System.out.println("检查 " + keys.size() + " 个设备的心跳状态");
+                // System.out.println("检查 " + keys.size() + " 个设备的心跳状态");
                 for (String key : keys) {
                     try {
                         String value = redisTemplate.opsForValue().get(key);
@@ -519,10 +506,10 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                             Long deviceId = Long.parseLong(key.substring("device:heartbeat:".length()));
                             long timeDiff = now - last;
                             
-                            System.out.println("设备 " + deviceId + " 最后心跳时间: " + (timeDiff / 1000) + " 秒前");
+                            // System.out.println("设备 " + deviceId + " 最后心跳时间: " + (timeDiff / 1000) + " 秒前");
                             
                             if (timeDiff > HEARTBEAT_TIMEOUT * 1000) {
-                                System.out.println("=== 设备 " + deviceId + " 心跳超时，自动下线并重置刺激状态 ===");
+                                // System.out.println("设备 " + deviceId + " 心跳超时，自动下线");
                                 
                                 // 调用新的方法：心跳超时处理（包含刺激状态重置）
                                 handleHeartbeatTimeout(deviceId);
@@ -534,9 +521,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                         System.err.println("检查设备心跳时发生异常: " + e.getMessage());
                     }
                 }
-                System.out.println("心跳检查完成，超时设备数: " + timeoutCount);
-            } else {
-                System.out.println("没有找到设备心跳记录");
+                // System.out.println("心跳检查完成，超时设备数: " + timeoutCount);
             }
             
         } catch (Exception e) {
@@ -551,7 +536,6 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
      */
     @Scheduled(fixedDelay = 30000)
     public void checkWebSocketConnectionStatus() {
-        System.out.println("=== WebSocket连接状态检查定时任务启动 ===");
         try {
             // 先清理断开的连接
             DeviceWebSocketServer.cleanupDisconnectedSessions();
@@ -559,7 +543,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             // 获取所有在线设备
             Set<String> statusKeys = scanKeys("device:status:*", 200);
             if (statusKeys != null && !statusKeys.isEmpty()) {
-                System.out.println("检查 " + statusKeys.size() + " 个设备的WebSocket连接状态");
+                // System.out.println("检查 " + statusKeys.size() + " 个设备的WebSocket连接状态");
                 for (String key : statusKeys) {
                     try {
                         Long deviceId = Long.parseLong(key.substring("device:status:".length()));
@@ -572,20 +556,16 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                         boolean hasActiveConnection = DeviceWebSocketServer.hasActiveConnection(deviceId);
                         
                         if (!hasActiveConnection) {
-                            System.out.println("=== 设备 " + deviceId + " WebSocket连接已断开，自动下线 ===");
+                            // System.out.println("设备 " + deviceId + " WebSocket连接已断开，自动下线");
                             
                             // 处理WebSocket连接断开
                             handleConnectionDisconnect(deviceId);
-                        } else {
-                            System.out.println("设备 " + deviceId + " WebSocket连接正常");
                         }
                         
                     } catch (Exception e) {
                         System.err.println("检查设备 " + key + " WebSocket连接状态时发生异常: " + e.getMessage());
                     }
                 }
-            } else {
-                System.out.println("没有在线设备需要检查");
             }
             
         } catch (Exception e) {
@@ -639,41 +619,31 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
      */
     private void handleHeartbeatTimeout(Long deviceId) {
         try {
-            System.out.println("=== 开始处理设备心跳超时 ===");
-            System.out.println("设备ID: " + deviceId);
-            
             // 查询设备信息
             Device device = deviceService.getById(deviceId);
             if (device != null) {
-                System.out.println("找到设备: " + device.getSn());
-                System.out.println("当前状态: " + device.getStatus());
-                System.out.println("当前刺激状态: " + device.getTreatmentStatus());
+                // System.out.println("找到设备: " + device.getSn());
+                // System.out.println("当前状态: " + device.getStatus());
+                // System.out.println("当前刺激状态: " + device.getTreatmentStatus());
                 
                 // 更新设备状态为离线
                 device.setStatus("offline");
-                System.out.println("设置设备状态为: offline");
+                // System.out.println("设置设备状态为: offline");
                 
                 // 重置刺激状态为0（非刺激状态）
                 Integer oldTreatmentStatus = device.getTreatmentStatus();
                 device.setTreatmentStatus(0);
-                System.out.println("重置刺激状态为: 0 (非刺激状态)");
+                // System.out.println("重置刺激状态为: 0 (非刺激状态)");
                 
                 // 更新数据库
                 boolean updateResult = deviceService.updateById(device);
                 if (updateResult) {
-                    System.out.println("=== 设备心跳超时处理成功 ===");
-                    System.out.println("设备ID: " + deviceId);
-                    System.out.println("状态已更新为: offline");
-                    System.out.println("刺激状态已重置为: 0");
-                    
                     // 如果治疗状态发生变化，推送治疗状态变化消息
                     if (oldTreatmentStatus != null && !oldTreatmentStatus.equals(0)) {
-                        System.out.println("检测到治疗状态变化，推送状态更新消息");
                         pushStatus(deviceId, "offline");
                     }
                 } else {
-                    System.err.println("=== 设备心跳超时处理失败 ===");
-                    System.err.println("数据库更新失败");
+                    System.err.println("设备心跳超时处理失败，数据库更新失败");
                 }
             } else {
                 System.err.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
@@ -681,13 +651,9 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
             
             // 更新Redis状态为离线
             redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + deviceId, "offline");
-            System.out.println("Redis状态已更新为: offline");
             
             // 推送状态变更消息
             pushStatus(deviceId, "offline");
-            System.out.println("状态变更消息已推送");
-            
-            System.out.println("=== 设备心跳超时处理完成 ===");
             
         } catch (Exception e) {
             System.err.println("处理设备心跳超时时发生异常: " + e.getMessage());
@@ -702,69 +668,49 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
     @Override
     public void handleConnectionDisconnect(Long deviceId) {
         try {
-            System.out.println("=== 开始处理WebSocket连接断开 ===");
-            System.out.println("设备ID: " + deviceId);
-            System.out.println("时间: " + new Date());
-            
             // 查询设备信息
             Device device = deviceService.getById(deviceId);
             if (device != null) {
-                System.out.println("找到设备: " + device.getSn());
-                System.out.println("当前状态: " + device.getStatus());
-                System.out.println("当前刺激状态: " + device.getTreatmentStatus());
+                // System.out.println("找到设备: " + device.getSn());
+                // System.out.println("当前状态: " + device.getStatus());
+                // System.out.println("当前刺激状态: " + device.getTreatmentStatus());
                 
                 // 保存旧的治疗状态，用于检测变化
                 Integer oldTreatmentStatus = device.getTreatmentStatus();
-                System.out.println("保存旧的治疗状态: " + oldTreatmentStatus);
+                // System.out.println("保存旧的治疗状态: " + oldTreatmentStatus);
                 
                 // 更新设备状态为离线
                 device.setStatus("offline");
-                System.out.println("设置设备状态为: offline");
+                // System.out.println("设置设备状态为: offline");
                 
                 // 重置刺激状态为0（非刺激状态）
                 device.setTreatmentStatus(0);
-                System.out.println("重置刺激状态为: 0 (非刺激状态)");
+                // System.out.println("重置刺激状态为: 0 (非刺激状态)");
                 
                 // 更新数据库
-                System.out.println("开始更新数据库...");
+                // System.out.println("开始更新数据库...");
                 boolean updateResult = deviceService.updateById(device);
-                System.out.println("数据库更新结果: " + updateResult);
+                // System.out.println("数据库更新结果: " + updateResult);
                 
                 if (updateResult) {
-                    System.out.println("=== WebSocket连接断开处理成功 ===");
-                    System.out.println("设备ID: " + deviceId);
-                    System.out.println("状态已更新为: offline");
-                    System.out.println("刺激状态已重置为: 0");
-                    
                     // 更新Redis状态为离线
-                    System.out.println("开始更新Redis状态...");
                     redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + deviceId, "offline");
-                    System.out.println("Redis状态已更新为: offline");
                     
                     // 推送状态变更消息（包含最新的治疗状态）
-                    System.out.println("开始推送状态变更消息...");
                     pushStatus(deviceId, "offline");
-                    System.out.println("状态变更消息已推送");
                     
                 } else {
-                    System.err.println("=== WebSocket连接断开处理失败 ===");
-                    System.err.println("数据库更新失败");
+                    System.err.println("WebSocket连接断开处理失败，数据库更新失败");
                 }
             } else {
                 System.err.println("警告：未找到设备ID为 " + deviceId + " 的设备记录");
                 
                 // 即使找不到设备，也要更新Redis状态为离线
-                System.out.println("开始更新Redis状态（设备不存在）...");
                 redisTemplate.opsForValue().set(DEVICE_STATUS_KEY + deviceId, "offline");
-                System.out.println("Redis状态已更新为: offline");
                 
                 // 推送状态变更消息（使用默认值）
-                System.out.println("开始推送状态变更消息（设备不存在）...");
                 pushStatus(deviceId, "offline");
-                System.out.println("状态变更消息已推送");
             }
-            
-            System.out.println("=== WebSocket连接断开处理完成 ===");
             
         } catch (Exception e) {
             System.err.println("处理WebSocket连接断开时发生异常: " + e.getMessage());

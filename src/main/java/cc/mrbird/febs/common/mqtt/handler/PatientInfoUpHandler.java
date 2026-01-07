@@ -44,6 +44,7 @@ public class PatientInfoUpHandler {
         }
         String msgId = getText(root, "msgId");
         if (!msgDedupService.checkAndMark(msgId, Duration.ofMinutes(10))) {
+            log.debug("MQTT patient-info-up 消息已处理，跳过: msgId={}", msgId);
             return;
         }
         String patientId = null;
@@ -52,8 +53,13 @@ public class PatientInfoUpHandler {
             patientId = getText(data, "patientId");
         }
         if (patientId == null || patientId.isEmpty()) {
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                               new HashMap<>(), true, -4, "missing_patient_id");
+            log.warn("MQTT patient-info-up 缺少 patientId");
+            try {
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                   new HashMap<>(), true, -4, "missing_patient_id");
+            } catch (Exception e) {
+                log.error("MQTT patient-info-up 发送处方失败 (missing_patient_id): {}", e.getMessage(), e);
+            }
             return;
         }
         
@@ -62,16 +68,26 @@ public class PatientInfoUpHandler {
         try {
             pid = Long.valueOf(patientId);
         } catch (NumberFormatException e) {
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                             new HashMap<>(), true, -3, "invalid_patient_id");
+            log.warn("MQTT patient-info-up 非法 patientId: {}", patientId);
+            try {
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                 new HashMap<>(), true, -3, "invalid_patient_id");
+            } catch (Exception ex) {
+                log.error("MQTT patient-info-up 发送处方失败 (invalid_patient_id): {}", ex.getMessage(), ex);
+            }
             return;
         }
         
         Patient patient = patientService.getById(pid);
         if (patient == null) {
             // 患者不存在
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                              new HashMap<>(), true, -2, "patient_not_found");
+            log.warn("MQTT patient-info-up 患者不存在: patientId={}", patientId);
+            try {
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                  new HashMap<>(), true, -2, "patient_not_found");
+            } catch (Exception e) {
+                log.error("MQTT patient-info-up 发送处方失败 (patient_not_found): {}", e.getMessage(), e);
+            }
             return;
         }
         
@@ -79,18 +95,31 @@ public class PatientInfoUpHandler {
         boolean hasThreshold = thresholdService.existsPatientThreshold(patientId);
         if (!hasThreshold) {
             // 患者存在但没有阈值
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                              new HashMap<>(), true, -1, "no_threshold");
+            log.warn("MQTT patient-info-up 患者没有阈值: patientId={}", patientId);
+            try {
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                  new HashMap<>(), true, -1, "no_threshold");
+            } catch (Exception e) {
+                log.error("MQTT patient-info-up 发送处方失败 (no_threshold): {}", e.getMessage(), e);
+            }
             return;
         }
-        Map<String, Object> prescription = prescriptionService.getByPatient(patientId);
-        if (prescription == null || prescription.isEmpty()) {
-            mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                              new HashMap<>(), true, 0, null);
-            return;
+        
+        try {
+            Map<String, Object> prescription = prescriptionService.getByPatient(patientId);
+            if (prescription == null || prescription.isEmpty()) {
+                log.info("MQTT patient-info-up 患者没有处方: patientId={}", patientId);
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                  new HashMap<>(), true, 0, null);
+            } else {
+                log.info("MQTT patient-info-up 发送处方: patientId={}, deviceType={}, deviceId={}", 
+                        patientId, p.getDeviceType(), p.getDeviceId());
+                mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
+                                                  prescription, true, 0, null);
+            }
+        } catch (Exception e) {
+            log.error("MQTT patient-info-up 处理失败: patientId={}, error={}", patientId, e.getMessage(), e);
         }
-        mqttClientService.sendPrescription(p.getDeviceType(), p.getDeviceId(), 
-                                          prescription, true, 0, null);
     }
 
     private String getText(JsonNode node, String field) {
