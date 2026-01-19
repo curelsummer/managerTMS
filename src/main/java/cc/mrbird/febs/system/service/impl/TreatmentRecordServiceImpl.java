@@ -156,9 +156,27 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteTreatmentRecord(Long id) {
         try {
+            // 1. 先删除关联的MEP记录（mep_record表没有外键约束，需要手动删除）
+            LambdaQueryWrapper<MepRecord> mepWrapper = new LambdaQueryWrapper<>();
+            mepWrapper.eq(MepRecord::getTreatmentRecordId, id);
+            List<MepRecord> mepRecords = mepRecordMapper.selectList(mepWrapper);
+            if (mepRecords != null && !mepRecords.isEmpty()) {
+                int mepCount = mepRecords.size();
+                for (MepRecord mepRecord : mepRecords) {
+                    // 删除MEP记录，由于mep_data有外键约束，会自动级联删除关联的MEP数据
+                    mepRecordMapper.deleteById(mepRecord.getId());
+                }
+                log.info("删除治疗记录关联的MEP记录，治疗记录ID: {}, MEP记录数量: {}", id, mepCount);
+            }
+            
+            // 2. 删除治疗记录（会自动级联删除prescription_record和tbs_prescription）
             int result = treatmentRecordMapper.deleteById(id);
+            if (result > 0) {
+                log.info("删除治疗记录成功，ID: {}", id);
+            }
             return result > 0;
         } catch (Exception e) {
             log.error("删除治疗记录失败，ID: {}", id, e);
@@ -167,11 +185,29 @@ public class TreatmentRecordServiceImpl implements TreatmentRecordService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteTreatmentRecords(String[] ids) {
         try {
-            for (String id : ids) {
-                treatmentRecordMapper.deleteById(Long.valueOf(id));
+            for (String idStr : ids) {
+                Long id = Long.valueOf(idStr);
+                
+                // 1. 先删除关联的MEP记录
+                LambdaQueryWrapper<MepRecord> mepWrapper = new LambdaQueryWrapper<>();
+                mepWrapper.eq(MepRecord::getTreatmentRecordId, id);
+                List<MepRecord> mepRecords = mepRecordMapper.selectList(mepWrapper);
+                if (mepRecords != null && !mepRecords.isEmpty()) {
+                    int mepCount = mepRecords.size();
+                    for (MepRecord mepRecord : mepRecords) {
+                        // 删除MEP记录，由于mep_data有外键约束，会自动级联删除关联的MEP数据
+                        mepRecordMapper.deleteById(mepRecord.getId());
+                    }
+                    log.info("批量删除：删除治疗记录关联的MEP记录，治疗记录ID: {}, MEP记录数量: {}", id, mepCount);
+                }
+                
+                // 2. 删除治疗记录（会自动级联删除prescription_record和tbs_prescription）
+                treatmentRecordMapper.deleteById(id);
             }
+            log.info("批量删除治疗记录成功，数量: {}", ids.length);
             return true;
         } catch (Exception e) {
             log.error("批量删除治疗记录失败", e);
